@@ -18,7 +18,7 @@ abstract class PacmanEntity {
     BufferedImage[] frames;
     Rectangle boundingBox;
     int instructionPointer;
-    long waitTime;
+    long startTime;
 
     private static final boolean DRAW_BOUNDING_BOX = true;
 

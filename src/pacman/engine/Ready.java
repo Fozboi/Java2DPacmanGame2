@@ -17,10 +17,10 @@ public class Ready extends PacmanEntity {
             switch (this.instructionPointer) {
                 case 0:
                     this.getGame().restoreCurrentFoodCount();
-                    this.waitTime = System.currentTimeMillis();
+                    this.startTime = System.currentTimeMillis();
                     this.instructionPointer = 1;
                 case 1:
-                    if (System.currentTimeMillis() - this.waitTime < 2000) {
+                    if (System.currentTimeMillis() - this.startTime < 2000) {
                         break;
                     }
                     this.getGame().setState(State.READY2);
@@ -30,10 +30,10 @@ public class Ready extends PacmanEntity {
             switch (this.instructionPointer) {
                 case 0:
                     this.getGame().showAll();
-                    this.waitTime = System.currentTimeMillis();
+                    this.startTime = System.currentTimeMillis();
                     this.instructionPointer = 1;
                 case 1:
-                    if (System.currentTimeMillis() - this.waitTime < 2000) {
+                    if (System.currentTimeMillis() - this.startTime < 2000) {
                         break;
                     }
                     this.getGame().setState(State.PLAYING);

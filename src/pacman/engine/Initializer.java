@@ -16,11 +16,11 @@ class Initializer extends PacmanEntity {
             this.setVisible(true);
             switch (this.instructionPointer) {
                 case 0:
-                    this.waitTime = System.currentTimeMillis();
+                    this.startTime = System.currentTimeMillis();
                     this.instructionPointer = 1;
                     break;
                 case 1:
-                    if (System.currentTimeMillis() - this.waitTime < 3000) {
+                    if (System.currentTimeMillis() - this.startTime < 3000) {
                         break;
                     }
                     this.instructionPointer = 2;

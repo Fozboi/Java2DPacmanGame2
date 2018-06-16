@@ -65,22 +65,22 @@ public class Pacman extends PacmanEntity {
             while (true) {
                 switch (this.instructionPointer) {
                     case 0:
-                        this.waitTime = System.currentTimeMillis();
+                        this.startTime = System.currentTimeMillis();
                         this.instructionPointer = 1;
                     case 1:
-                        if (System.currentTimeMillis() - this.waitTime < 3000) {
+                        if (System.currentTimeMillis() - this.startTime < 3000) {
                             break yield;
                         }
                         this.instructionPointer = 2;
                     case 2:
                         this.direction = 0;
                         if (!moveToTargetPosition(250, 200, 1)) {
-                            this.waitTime = System.currentTimeMillis();
+                            this.startTime = System.currentTimeMillis();
                             this.instructionPointer = 3;
                         }
                         break yield;
                     case 3:
-                        if (System.currentTimeMillis() - this.waitTime < 3000) {
+                        if (System.currentTimeMillis() - this.startTime < 3000) {
                             break yield;
                         }
                         this.instructionPointer = 4;
@@ -162,10 +162,10 @@ public class Pacman extends PacmanEntity {
             while (true) {
                 switch (this.instructionPointer) {
                     case 0:
-                        this.waitTime = System.currentTimeMillis();
+                        this.startTime = System.currentTimeMillis();
                         this.instructionPointer = 1;
                     case 1:
-                        if (System.currentTimeMillis() - this.waitTime < 2000) {
+                        if (System.currentTimeMillis() - this.startTime < 2000) {
                             break yield;
                         }
                         this.diedTime = System.currentTimeMillis();
@@ -174,12 +174,12 @@ public class Pacman extends PacmanEntity {
                         final int frameIndex = 16 + (int) ((System.currentTimeMillis() - this.diedTime) * 0.0075);
                         this.frame = this.frames[frameIndex];
                         if (frameIndex == 29) {
-                            this.waitTime = System.currentTimeMillis();
+                            this.startTime = System.currentTimeMillis();
                             this.instructionPointer = 3;
                         }
                         break yield;
                     case 3:
-                        if (System.currentTimeMillis() - this.waitTime < 1500) {
+                        if (System.currentTimeMillis() - this.startTime < 1500) {
                             break yield;
                         }
                         this.instructionPointer = 4;

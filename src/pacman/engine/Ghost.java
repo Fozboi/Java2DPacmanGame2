@@ -11,40 +11,46 @@ public class Ghost extends PacmanEntity {
 
     private final Pacman pacman;
     private final int type;
+    private int col;
+    private int row;
+    private int cageUpDownCount;
+    private Mode mode = Mode.CAGE;
+    private int direction = 0;
+    private int lastDirection;
+    private final List<Integer> desiredDirections = new ArrayList<>();
+    private int desiredDirection;
+    private static final int[] backwardDirections = {2, 3, 0, 1};
+    private long vulnerableModeStartTime;
+    private boolean markAsVulnerable;
+    private final ShortestPathFinder pathFinder;
 
     private static final Point[] INITIAL_POSITIONS = {
             new Point(18, 11), new Point(16, 14),
             new Point(18, 14), new Point(20, 14)
     };
 
-    private int cageUpDownCount;
+    int getCol() {
+        return this.col;
+    }
+
+    void setCol(final int col) {
+        this.col = col;
+    }
+
+    int getRow() {
+        return this.row;
+    }
+
+    void setRow(final int row) {
+        this.row = row;
+    }
 
     public enum Mode {
         CAGE,
         NORMAL,
         VULNERABLE,
         DIED
-
     }
-
-    private Mode mode = Mode.CAGE;
-
-    private int dx;
-    private int dy;
-    int col;
-    int row;
-
-    private int direction = 0;
-    private int lastDirection;
-
-    private final List<Integer> desiredDirections = new ArrayList<>();
-    private int desiredDirection;
-    private static final int[] backwardDirections = {2, 3, 0, 1};
-
-    private long vulnerableModeStartTime;
-    private boolean markAsVulnerable;
-
-    private final ShortestPathFinder pathFinder;
 
     Ghost(final PacmanGame game,
           final Pacman pacman,
@@ -82,13 +88,13 @@ public class Ghost extends PacmanEntity {
     }
 
     void updatePosition() {
-        this.x = getTargetX(this.col);
-        this.y = getTargetY(this.row);
+        this.x = getTargetX(this.getCol());
+        this.y = getTargetY(this.getRow());
     }
 
     private void updatePosition(int col, int row) {
-        this.col = col;
-        this.row = row;
+        this.setCol(col);
+        this.setRow(row);
         updatePosition();
     }
 
@@ -111,12 +117,12 @@ public class Ghost extends PacmanEntity {
     }
 
     private void adjustHorizontalOutsideMovement() {
-        if (this.col == 1) {
-            this.col = 34;
-            this.x = getTargetX(this.col);
-        } else if (this.col == 34) {
-            this.col = 1;
-            this.x = getTargetX(this.col);
+        if (this.getCol() == 1) {
+            this.setCol(34);
+            this.x = getTargetX(this.getCol());
+        } else if (this.getCol() == 34) {
+            this.setCol(1);
+            this.x = getTargetX(this.getCol());
         }
     }
 
@@ -137,10 +143,10 @@ public class Ghost extends PacmanEntity {
             while (true) {
                 switch (this.instructionPointer) {
                     case 0:
-                        this.waitTime = System.currentTimeMillis();
+                        this.startTime = System.currentTimeMillis();
                         this.instructionPointer = 1;
                     case 1:
-                        if (System.currentTimeMillis() - this.waitTime < 1500) {
+                        if (System.currentTimeMillis() - this.startTime < 1500) {
                             break yield;
                         }
                         this.setVisible(false);
@@ -150,7 +156,7 @@ public class Ghost extends PacmanEntity {
                 }
             }
             updateAnimation();
-        } else if(this.getGame().getState() == State.GHOST_CATCHED) {
+        } else if(this.getGame().getState() == State.GHOST_CAPTURED) {
             if (this.mode == Mode.DIED) {
                 updateGhostDied();
                 updateAnimation();
@@ -160,10 +166,10 @@ public class Ghost extends PacmanEntity {
             while (true) {
                 switch (this.instructionPointer) {
                     case 0:
-                        this.waitTime = System.currentTimeMillis();
+                        this.startTime = System.currentTimeMillis();
                         this.instructionPointer = 1;
                     case 1:
-                        if (System.currentTimeMillis() - this.waitTime < 1500) {
+                        if (System.currentTimeMillis() - this.startTime < 1500) {
                             break yield;
                         }
                         this.setVisible(false);
@@ -299,9 +305,9 @@ public class Ghost extends PacmanEntity {
         }
 
         if (this.type == 0 || this.type == 1) {
-            updateGhostMovement(true, this.pacman.col, this.pacman.row, 1, this.pacmanCatchedAction, 0, 1, 2, 3); // chase movement
+            updateGhostMovement(true, this.pacman.col, this.pacman.row, this.pacmanCatchedAction, 0, 1, 2, 3); // chase movement
         } else {
-            updateGhostMovement(false, 0, 0, 1, this.pacmanCatchedAction, 0, 1, 2, 3); // random movement
+            updateGhostMovement(false, 0, 0, this.pacmanCatchedAction, 0, 1, 2, 3); // random movement
         }
     }
 
@@ -319,7 +325,7 @@ public class Ghost extends PacmanEntity {
             this.markAsVulnerable = false;
         }
 
-        updateGhostMovement(true, this.pacman.col, this.pacman.row, 1, this.ghostCatchedAction, 2, 3, 0, 1); // run away movement
+        updateGhostMovement(true, this.pacman.col, this.pacman.row, this.ghostCatchedAction, 2, 3, 0, 1); // run away movement
         // return to normal mode after 8 seconds
         if (!checkVulnerableModeTime()) {
             setMode(Mode.NORMAL);
@@ -335,7 +341,7 @@ public class Ghost extends PacmanEntity {
         while (true) {
             switch (this.instructionPointer) {
                 case 0:
-                    this.pathFinder.find(this.col, this.row, 18, 11);
+                    this.pathFinder.find(this.getCol(), this.getRow(), 18, 11);
                     this.instructionPointer = 1;
                 case 1:
                     if (!this.pathFinder.hasNext()) {
@@ -343,12 +349,12 @@ public class Ghost extends PacmanEntity {
                         continue yield;
                     }
                     Point nextPosition = this.pathFinder.getNext();
-                    this.col = nextPosition.x;
-                    this.row = nextPosition.y;
+                    this.setCol(nextPosition.x);
+                    this.setRow(nextPosition.y);
                     this.instructionPointer = 2;
                 case 2:
-                    if (!moveToGridPosition(this.col, this.row, 4)) {
-                        if (this.row == 11 && (this.col == 17 || this.col == 18)) {
+                    if (!moveToGridPosition(this.getCol(), this.getRow(), 4)) {
+                        if (this.getRow() == 11 && (this.getCol() == 17 || this.getCol() == 18)) {
                             this.instructionPointer = 3;
                             continue yield;
                         }
@@ -379,20 +385,19 @@ public class Ghost extends PacmanEntity {
     private void updateGhostMovement(final boolean useTarget,
                                      final int targetCol,
                                      final int targetRow,
-                                     final int velocity,
                                      final Runnable collisionWithPacmanAction,
                                      final int... desiredDirectionsMap) {
 
         this.desiredDirections.clear();
         if (useTarget) {
-            if (targetCol - this.col > 0) {
+            if (targetCol - this.getCol() > 0) {
                 this.desiredDirections.add(desiredDirectionsMap[0]);
-            } else if (targetCol - this.col < 0) {
+            } else if (targetCol - this.getCol() < 0) {
                 this.desiredDirections.add(desiredDirectionsMap[2]);
             }
-            if (targetRow - this.row > 0) {
+            if (targetRow - this.getRow() > 0) {
                 this.desiredDirections.add(desiredDirectionsMap[1]);
-            } else if (targetRow - this.row < 0) {
+            } else if (targetRow - this.getRow() < 0) {
                 this.desiredDirections.add(desiredDirectionsMap[3]);
             }
         }
@@ -405,15 +410,15 @@ public class Ghost extends PacmanEntity {
         while (true) {
             switch (this.instructionPointer) {
                 case 0:
-                    if ((this.row == 14 && this.col == 1 && this.lastDirection == 2)
-                            || (this.row == 14 && this.col == 34 && this.lastDirection == 0)) {
+                    if ((this.getRow() == 14 && this.getCol() == 1 && this.lastDirection == 2)
+                            || (this.getRow() == 14 && this.getCol() == 34 && this.lastDirection == 0)) {
                         adjustHorizontalOutsideMovement();
                     }
 
                     double angle = Math.toRadians(this.desiredDirection * 90);
-                    this.dx = (int) Math.cos(angle);
-                    this.dy = (int) Math.sin(angle);
-                    if (useTarget && this.getGame().maze[this.row + this.dy][this.col + this.dx] == 0
+                    int dx = (int) Math.cos(angle);
+                    int dy = (int) Math.sin(angle);
+                    if (useTarget && this.getGame().maze[this.getRow() + dy][this.getCol() + dx] == 0
                             && this.desiredDirection != backwardDirections[this.lastDirection]) {
 
                         this.direction = this.desiredDirection;
@@ -421,18 +426,18 @@ public class Ghost extends PacmanEntity {
                         do {
                             this.direction = (int) (4 * Math.random());
                             angle = Math.toRadians(this.direction * 90);
-                            this.dx = (int) Math.cos(angle);
-                            this.dy = (int) Math.sin(angle);
+                            dx = (int) Math.cos(angle);
+                            dy = (int) Math.sin(angle);
                         }
-                        while (this.getGame().maze[this.row + this.dy][this.col + this.dx] == -1
+                        while (this.getGame().maze[this.getRow() + dy][this.getCol() + dx] == -1
                                 || this.direction == backwardDirections[this.lastDirection]);
                     }
 
-                    this.col += this.dx;
-                    this.row += this.dy;
+                    this.setCol(this.getCol() + dx);
+                    this.setRow(this.getRow() + dy);
                     this.instructionPointer = 1;
                 case 1:
-                    if (!moveToGridPosition(this.col, this.row, velocity)) {
+                    if (!moveToGridPosition(this.getCol(), this.getRow(), 1)) {
                         this.lastDirection = this.direction;
                         this.instructionPointer = 0;
                         // adjustHorizontalOutsideMovement();
@@ -491,12 +496,12 @@ public class Ghost extends PacmanEntity {
         this.setVisible(false);
     }
 
-    public void startGhostVulnerableMode() {
+    void startGhostVulnerableMode() {
         this.vulnerableModeStartTime = System.currentTimeMillis();
         this.markAsVulnerable = true;
     }
 
-    public void died() {
+    void died() {
         setMode(Mode.DIED);
     }
 

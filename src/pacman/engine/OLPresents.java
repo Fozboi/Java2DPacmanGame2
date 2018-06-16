@@ -21,10 +21,11 @@ public class OLPresents extends PacmanEntity {
         }
         switch (this.instructionPointer) {
             case 0:
-                this.waitTime = System.currentTimeMillis();
+                this.startTime = System.currentTimeMillis();
                 this.instructionPointer = 1;
+                break;
             case 1:
-                if (System.currentTimeMillis() - this.waitTime < 100) {
+                if (System.currentTimeMillis() - this.startTime < 100) {
                     break;
                 }
                 this.textIndex++;
@@ -32,17 +33,17 @@ public class OLPresents extends PacmanEntity {
                     this.instructionPointer = 0;
                     break;
                 }
-                this.waitTime = System.currentTimeMillis();
+                this.startTime = System.currentTimeMillis();
                 this.instructionPointer = 2;
             case 2:
-                if (System.currentTimeMillis() - this.waitTime < 3000) {
+                if (System.currentTimeMillis() - this.startTime < 3000) {
                     break;
                 }
                 this.setVisible(false);
-                this.waitTime = System.currentTimeMillis();
+                this.startTime = System.currentTimeMillis();
                 this.instructionPointer = 3;
             case 3:
-                if (System.currentTimeMillis() - this.waitTime < 1500) {
+                if (System.currentTimeMillis() - this.startTime < 1500) {
                     break;
                 }
                 this.getGame().setState(State.TITLE);

@@ -22,26 +22,26 @@ class Background extends PacmanEntity {
                 switch (this.instructionPointer) {
                     case 0:
                         this.frameCount = 0;
-                        this.waitTime = System.currentTimeMillis();
+                        this.startTime = System.currentTimeMillis();
                         this.instructionPointer = 1;
                     case 1:
-                        if (System.currentTimeMillis() - this.waitTime < 1500) {
+                        if (System.currentTimeMillis() - this.startTime < 1500) {
                             return;
                         }
                         this.instructionPointer = 2;
                     case 2:
                         this.frame = this.frames[1];
-                        this.waitTime = System.currentTimeMillis();
+                        this.startTime = System.currentTimeMillis();
                         this.instructionPointer = 3;
                     case 3:
-                        if (System.currentTimeMillis() - this.waitTime < 200) {
+                        if (System.currentTimeMillis() - this.startTime < 200) {
                             return;
                         }
                         this.frame = this.frames[0];
-                        this.waitTime = System.currentTimeMillis();
+                        this.startTime = System.currentTimeMillis();
                         this.instructionPointer = 4;
                     case 4:
-                        if (System.currentTimeMillis() - this.waitTime < 200) {
+                        if (System.currentTimeMillis() - this.startTime < 200) {
                             return;
                         }
                         this.frameCount++;
@@ -50,10 +50,10 @@ class Background extends PacmanEntity {
                             return;
                         }
                         this.getGame().hideAll();
-                        this.waitTime = System.currentTimeMillis();
+                        this.startTime = System.currentTimeMillis();
                         this.instructionPointer = 5;
                     case 5:
-                        if (System.currentTimeMillis() - this.waitTime < 500) {
+                        if (System.currentTimeMillis() - this.startTime < 500) {
                             return;
                         }
                         this.setVisible(true);

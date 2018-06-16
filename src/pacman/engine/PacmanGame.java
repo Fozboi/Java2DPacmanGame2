@@ -24,7 +24,7 @@ public class PacmanGame {
     private int foodCount;
     private int currentFoodCount;
 
-    final static int[] CAUGHT_GHOST_SCORE_TABLE = { 200, 400, 800, 1600 };
+    final static int[] CAPTURED_GHOST_SCORE_TABLE = { 200, 400, 800, 1600 };
 
     Ghost getCaughtGhost() {
         return this.caughtGhost;
@@ -58,7 +58,7 @@ public class PacmanGame {
         READY2,
         PLAYING,
         PACMAN_DIED,
-        GHOST_CATCHED,
+        GHOST_CAPTURED,
         LEVEL_CLEARED,
         GAME_OVER
     }
@@ -218,7 +218,7 @@ public class PacmanGame {
 
     void ghostCatched(Ghost ghost) {
         this.setCaughtGhost(ghost);
-        setState(State.GHOST_CATCHED);
+        setState(State.GHOST_CAPTURED);
     }
 
     void nextLife() {

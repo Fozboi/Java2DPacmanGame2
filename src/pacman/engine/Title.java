@@ -22,10 +22,10 @@ public class Title extends PacmanEntity {
         if(this.getGame().getState() == State.TITLE) {
                 switch (this.instructionPointer) {
                     case 0:
-                        this.waitTime = System.currentTimeMillis();
+                        this.startTime = System.currentTimeMillis();
                         this.instructionPointer = 1;
                     case 1:
-                        if (System.currentTimeMillis() - this.waitTime < 500) {
+                        if (System.currentTimeMillis() - this.startTime < 500) {
                             break;
                         }
                         this.instructionPointer = 2;
@@ -33,12 +33,12 @@ public class Title extends PacmanEntity {
                         double dy = 100 - this.y;
                         this.y = this.y + dy * 0.1;
                         if (Math.abs(dy) < 1) {
-                            this.waitTime = System.currentTimeMillis();
+                            this.startTime = System.currentTimeMillis();
                             this.instructionPointer = 3;
                         }
                         break;
                     case 3:
-                        if (System.currentTimeMillis() - this.waitTime < 200) {
+                        if (System.currentTimeMillis() - this.startTime < 200) {
                             break;
                         }
                         this.instructionPointer = 4;
