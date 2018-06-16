@@ -1,4 +1,4 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
 import java.awt.Point;
 import java.util.ArrayList;

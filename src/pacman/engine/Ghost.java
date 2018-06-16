@@ -1,6 +1,6 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
-import br.ol.pacman.engine.PacmanGame.State;
+import pacman.engine.PacmanGame.State;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -55,13 +55,13 @@ public class Ghost extends PacmanEntity {
         this.pathFinder = new ShortestPathFinder(game.maze);
         String[] ghostFrameNames = new String[8 + 4 + 4];
         for (int i = 0; i < 8; i++) {
-            ghostFrameNames[i] = "/res/ghost_" + this.type + "_" + i + ".png";
+            ghostFrameNames[i] = "/resources/ghost_" + this.type + "_" + i + ".png";
         }
         for (int i = 0; i < 4; i++) {
-            ghostFrameNames[8 + i] = "/res/ghost_vulnerable_" + i + ".png";
+            ghostFrameNames[8 + i] = "/resources/ghost_vulnerable_" + i + ".png";
         }
         for (int i = 0; i < 4; i++) {
-            ghostFrameNames[12 + i] = "/res/ghost_died_" + i + ".png";
+            ghostFrameNames[12 + i] = "/resources/ghost_died_" + i + ".png";
         }
         loadFrames(ghostFrameNames);
         this.boundingBox = new Rectangle(0, 0, 6, 6);

@@ -1,13 +1,12 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
-import br.ol.pacman.engine.PacmanGame.State;
 import java.awt.Graphics2D;
 
 public class HUD extends PacmanEntity {
 
     HUD(final PacmanGame game) {
         super(game);
-        loadFrames("/res/pacman_life.png");
+        loadFrames("/resources/pacman_life.png");
     }
 
     @Override
@@ -31,12 +30,12 @@ public class HUD extends PacmanEntity {
 
     @Override
     public void stateChanged() {
-        this.setVisible((this.getGame().getState() != State.INITIALIZING)
-                && (this.getGame().getState() !=State.OL_PRESENTS));
+        this.setVisible((this.getGame().getState() != PacmanGame.State.INITIALIZING)
+                && (this.getGame().getState() !=PacmanGame.State.OL_PRESENTS));
     }
 
     public void showAll() {
         this.setVisible(true);
     }
-    
+
 }

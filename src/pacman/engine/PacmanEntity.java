@@ -1,4 +1,4 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -72,5 +72,12 @@ abstract class PacmanEntity {
 
     public void setVisible(final boolean visible) {
         this.visible = visible;
+    }
+
+    public void showAll() {
+    }
+
+    public void hideAll() {
+
     }
 }

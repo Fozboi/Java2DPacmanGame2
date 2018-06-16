@@ -1,4 +1,4 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
@@ -14,7 +14,7 @@ public class PacmanGame {
     private final List<PacmanEntity> allPacmanEntities = new ArrayList<>();
     private final List<Ghost> pacmanGhosts = new ArrayList<>();
     private final Pacman pacman;
-    private final BitmapFontRenderer bitmapFontRenderer = new BitmapFontRenderer("/res/font8x8.png", 16, 16);
+    private final BitmapFontRenderer bitmapFontRenderer = new BitmapFontRenderer("/resources/font8x8.png", 16, 16);
     private State state;
     private int lives;
     private int score;
@@ -137,14 +137,14 @@ public class PacmanGame {
             }
         }
     }
-    
+
     void addScore(final int point) {
         this.score += point;
         if (this.score > this.highScore) {
             this.highScore = this.score;
         }
     }
-    
+
     String getScore() {
         String scoreStr = "0000000" + this.score;
         scoreStr = scoreStr.substring(scoreStr.length() - 7, scoreStr.length());
@@ -156,11 +156,11 @@ public class PacmanGame {
         hiscoreStr = hiscoreStr.substring(hiscoreStr.length() - 7, hiscoreStr.length());
         return hiscoreStr;
     }
-    
+
     void init() {
         addAllObjs();
     }
-    
+
     private void addAllObjs() {
         this.getAllPacmanEntities().add(new Initializer(this));
         this.getAllPacmanEntities().add(new OLPresents(this));
@@ -204,23 +204,23 @@ public class PacmanGame {
     boolean isLevelCleared() {
         return this.getCurrentFoodCount() == 0;
     }
-    
+
     void startGame() {
         setState(State.READY);
     }
-    
+
     void startGhostVulnerableMode() {
         this.setCaughtGhostScoreTableIndex(0);
         for(final Ghost ghost : this.pacmanGhosts) {
             ghost.startGhostVulnerableMode();
         }
     }
-    
+
     void ghostCatched(Ghost ghost) {
         this.setCaughtGhost(ghost);
         setState(State.GHOST_CATCHED);
     }
-    
+
     void nextLife() {
         this.setLives(this.getLives() - 1);
         if (this.getLives() == 0) {
@@ -265,22 +265,6 @@ public class PacmanGame {
                 && pellet.boundingBox.intersects(this.pacman.boundingBox);
     }
 
-//    boolean powerPelletConsumed(final PowerPellet powerPellet) {
-//        powerPellet.updateBoundingBox();
-//        this.pacman.updateBoundingBox();
-//        return powerPellet.boundingBox != null && this.pacman.boundingBox != null
-//                && powerPellet.isVisible() && this.pacman.isVisible()
-//                && powerPellet.boundingBox.intersects(this.pacman.boundingBox);
-//    }
-//
-//    boolean powerPelletConsumed(final NormalPellet pellet) {
-//        pellet.updateBoundingBox();
-//        this.pacman.updateBoundingBox();
-//        return pellet.boundingBox != null && this.pacman.boundingBox != null
-//                && pellet.isVisible() && this.pacman.isVisible()
-//                && pellet.boundingBox.intersects(this.pacman.boundingBox);
-//    }
-
     void broadcastMessage(String message) {
         for (final PacmanEntity obj : this.getAllPacmanEntities()) {
             try {
@@ -294,9 +278,20 @@ public class PacmanGame {
         }
     }
 
+    void showAll() {
+        for (final PacmanEntity obj : this.getAllPacmanEntities()) {
+            obj.showAll();
+        }
+    }
+
+    void hideAll() {
+        for (final PacmanEntity obj : this.getAllPacmanEntities()) {
+            obj.hideAll();
+        }
+    }
+
     void drawText(Graphics2D g, String text, int x, int y) {
         this.bitmapFontRenderer.drawText(g, text, x, y);
     }
 
-    
 }

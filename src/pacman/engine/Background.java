@@ -1,24 +1,23 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
-import br.ol.pacman.engine.PacmanGame.State;
+import pacman.engine.PacmanGame.State;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
 class Background extends PacmanEntity {
-    
+
     private final boolean showBlockedCellColor = false;
     private final Color blockedCellColor = new Color(255, 0, 0, 128);
     private int frameCount;
-    
+
     Background(final PacmanGame game) {
         super(game);
-        loadFrames("/res/background_0.png", "/res/background_1.png");
+        loadFrames("/resources/background_0.png", "/resources/background_1.png");
     }
 
     @Override
     public void update() {
         if(this.getGame().getState() == State.LEVEL_CLEARED) {
-            yield:
             while (true) {
                 switch (this.instructionPointer) {
                     case 0:
@@ -27,7 +26,7 @@ class Background extends PacmanEntity {
                         this.instructionPointer = 1;
                     case 1:
                         if (System.currentTimeMillis() - this.waitTime < 1500) {
-                            break yield;
+                            return;
                         }
                         this.instructionPointer = 2;
                     case 2:
@@ -36,30 +35,30 @@ class Background extends PacmanEntity {
                         this.instructionPointer = 3;
                     case 3:
                         if (System.currentTimeMillis() - this.waitTime < 200) {
-                            break yield;
+                            return;
                         }
                         this.frame = this.frames[0];
                         this.waitTime = System.currentTimeMillis();
                         this.instructionPointer = 4;
                     case 4:
                         if (System.currentTimeMillis() - this.waitTime < 200) {
-                            break yield;
+                            return;
                         }
                         this.frameCount++;
                         if (this.frameCount < 5) {
                             this.instructionPointer = 2;
-                            continue yield;
+                            return;
                         }
-                        this.getGame().broadcastMessage("hideAll");
+                        this.getGame().hideAll();
                         this.waitTime = System.currentTimeMillis();
                         this.instructionPointer = 5;
                     case 5:
                         if (System.currentTimeMillis() - this.waitTime < 500) {
-                            break yield;
+                            return;
                         }
                         this.setVisible(true);
                         this.getGame().nextLevel();
-                        break yield;
+                        return;
                 }
             }
         }
@@ -100,5 +99,5 @@ class Background extends PacmanEntity {
     public void showAll() {
         this.setVisible(true);
     }
-    
+
 }

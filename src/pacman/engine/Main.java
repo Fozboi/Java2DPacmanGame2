@@ -1,4 +1,4 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
 import javax.swing.*;
 
@@ -19,5 +19,5 @@ class Main {
             display.start();
         });
     }
-    
+
 }

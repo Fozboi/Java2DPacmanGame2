@@ -1,21 +1,21 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
 
-import br.ol.pacman.engine.PacmanGame.State;
+import pacman.engine.PacmanGame.State;
 
 public class GameOver extends PacmanEntity {
-    
+
     GameOver(final PacmanGame game) {
         super(game);
         this.x = 77;
         this.y = 160;
-        loadFrames("/res/gameover.png");
+        loadFrames("/resources/gameover.png");
     }
 
     @Override
     public void update() {
+        System.out.println("visible = " +this.isVisible());
         if (this.getGame().getState() == State.GAME_OVER) {
-            yield:
             while (true) {
                 switch (this.instructionPointer) {
                     case 0:
@@ -23,10 +23,10 @@ public class GameOver extends PacmanEntity {
                         this.instructionPointer = 1;
                     case 1:
                         if (System.currentTimeMillis() - this.waitTime < 3000) {
-                            break yield;
+                            return;
                         }
                         this.getGame().returnToTitle();
-                        break yield;
+                        return;
                 }
             }
         }
@@ -42,7 +42,6 @@ public class GameOver extends PacmanEntity {
     }
 
     public void showAll() {
-        this.setVisible(true);
     }
-        
+
 }

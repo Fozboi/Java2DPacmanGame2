@@ -1,19 +1,19 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
-import br.ol.pacman.engine.PacmanGame.State;
+import pacman.engine.PacmanGame.State;
 import java.awt.Rectangle;
 
 public class Point extends PacmanEntity {
-    
+
     private final Pacman pacman;
-    
+
     Point(final PacmanGame game,
           final Pacman pacman) {
         super(game);
         this.pacman = pacman;
-        loadFrames("/res/point_0.png",
-                    "/res/point_1.png"
-                , "/res/point_2.png", "/res/point_3.png");
+        loadFrames("/resources/point_0.png",
+                "/resources/point_1.png"
+                , "/resources/point_2.png", "/resources/point_3.png");
         this.boundingBox = new Rectangle(0, 0, 4, 4);
     }
 
@@ -26,7 +26,6 @@ public class Point extends PacmanEntity {
     @Override
     public void update() {
         if(this.getGame().getState() == State.GHOST_CATCHED) {
-            yield:
             while (true) {
                 switch (this.instructionPointer) {
                     case 0:
@@ -40,8 +39,8 @@ public class Point extends PacmanEntity {
                         this.waitTime = System.currentTimeMillis();
                         this.instructionPointer = 1;
                     case 1:
-                        while (System.currentTimeMillis() - this.waitTime < 500) {
-                            break yield;
+                        if (System.currentTimeMillis() - this.waitTime < 500) {
+                            return;
                         }
                         this.pacman.setVisible(true);
                         this.pacman.updatePosition();
@@ -49,7 +48,7 @@ public class Point extends PacmanEntity {
                         this.getGame().getCaughtGhost().updatePosition();
                         this.getGame().getCaughtGhost().died();
                         this.getGame().setState(State.PLAYING);
-                        break yield;
+                        return;
                 }
             }
         }
@@ -71,5 +70,5 @@ public class Point extends PacmanEntity {
     public void showAll() {
         this.setVisible(true);
     }
-    
+
 }

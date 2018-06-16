@@ -1,4 +1,4 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
 abstract class Pellet extends PacmanEntity {
 

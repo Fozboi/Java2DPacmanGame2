@@ -1,4 +1,4 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -7,11 +7,11 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 
 class Display extends Canvas {
-   
+
     private final PacmanGame game;
     private boolean running;
     private BufferStrategy bs;
-    
+
     Display(final PacmanGame game) {
         this.game = game;
         final int sx = (int) (game.getScreenSize().getWidth() * game.getScreenScale().getX());
@@ -76,15 +76,15 @@ class Display extends Canvas {
                 }
             }
         }
-        
+
     }
-    
+
     private void update() {
         this.getGame().update();
     }
-    
+
     private void draw(Graphics2D g) {
         this.getGame().draw(g);
     }
-    
+
 }

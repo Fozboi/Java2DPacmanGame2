@@ -1,17 +1,17 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
-import br.ol.pacman.engine.PacmanGame.State;
+import pacman.engine.PacmanGame.State;
 import java.awt.Rectangle;
 
 public class PowerPellet extends Pellet {
 
     private boolean eaten;
-    
+
     PowerPellet(final PacmanGame game,
                 final int col,
                 final int row) {
         super(game, col, row);
-        loadFrames("/res/powerBall.png");
+        loadFrames("/resources/powerBall.png");
         this.x = col * 8 + 1 - 32;
         this.y = (row + 3) * 8 + 1;
         this.boundingBox = new Rectangle(0, 0, 4, 4);
@@ -52,5 +52,5 @@ public class PowerPellet extends Pellet {
     public void showAll() {
         this.setVisible(true);
     }
-    
+
 }

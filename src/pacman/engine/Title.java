@@ -1,18 +1,18 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
 
-import br.ol.pacman.engine.PacmanGame.State;
+import pacman.engine.PacmanGame.State;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
 public class Title extends PacmanEntity {
-    
+
     private boolean pushSpaceToStartVisible;
 
     Title(final PacmanGame game) {
         super(game);
-        loadFrames("/res/title.png");
+        loadFrames("/resources/title.png");
         this.x = 21;
         this.y = 100;
     }
@@ -20,15 +20,13 @@ public class Title extends PacmanEntity {
     @Override
     public void update() {
         if(this.getGame().getState() == State.TITLE) {
-            yield:
-            while (true) {
                 switch (this.instructionPointer) {
                     case 0:
                         this.waitTime = System.currentTimeMillis();
                         this.instructionPointer = 1;
                     case 1:
                         if (System.currentTimeMillis() - this.waitTime < 500) {
-                            break yield;
+                            break;
                         }
                         this.instructionPointer = 2;
                     case 2:
@@ -38,10 +36,10 @@ public class Title extends PacmanEntity {
                             this.waitTime = System.currentTimeMillis();
                             this.instructionPointer = 3;
                         }
-                        break yield;
+                        break;
                     case 3:
                         if (System.currentTimeMillis() - this.waitTime < 200) {
-                            break yield;
+                            break;
                         }
                         this.instructionPointer = 4;
                     case 4:
@@ -49,9 +47,7 @@ public class Title extends PacmanEntity {
                         if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_SPACE]) {
                             this.getGame().startGame();
                         }
-                        break yield;
                 }
-            }
         }
     }
 
@@ -82,5 +78,5 @@ public class Title extends PacmanEntity {
     public void showAll() {
         this.setVisible(true);
     }
-        
+
 }

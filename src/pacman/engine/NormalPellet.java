@@ -1,4 +1,4 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -10,7 +10,7 @@ public class NormalPellet extends Pellet {
                  final int row,
                  final int col) {
         super(game, row, col);
-        loadFrames("/res/food.png");
+        loadFrames("/resources/food.png");
         this.x = col * 8 + 3 - 32;
         this.y = (row + 3) * 8 + 3;
         this.boundingBox = new Rectangle(0, 0, 2, 2);

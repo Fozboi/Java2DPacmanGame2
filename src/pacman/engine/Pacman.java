@@ -1,12 +1,12 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
-import br.ol.pacman.engine.PacmanGame.State;
+import pacman.engine.PacmanGame.State;
 
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 
 public class Pacman extends PacmanEntity {
-    
+
     int col;
     int row;
     private int desiredDirection;
@@ -14,17 +14,17 @@ public class Pacman extends PacmanEntity {
     private int dx;
     private int dy;
     private long diedTime;
-    
+
     Pacman(final PacmanGame game) {
         super(game);
         final String[] pacmanFrameNames = new String[30];
         for (int d = 0; d < 4; d++) {
             for (int i = 0; i < 4; i++) {
-                pacmanFrameNames[i + 4 * d] = "/res/pacman_" + d + "_" + i + ".png";
+                pacmanFrameNames[i + 4 * d] = "/resources/pacman_" + d + "_" + i + ".png";
             }
         }
         for (int i=0; i<14; i++) {
-            pacmanFrameNames[16 + i] = "/res/pacman_died_" + i + ".png";
+            pacmanFrameNames[16 + i] = "/resources/pacman_died_" + i + ".png";
         }
         loadFrames(pacmanFrameNames);
         reset();
@@ -38,7 +38,7 @@ public class Pacman extends PacmanEntity {
         this.frame = this.frames[0];
         this.direction = this.desiredDirection = 0;
     }
-    
+
     void updatePosition() {
         this.x = this.col * 8 - 4 - 32 - 4;
         this.y = (this.row + 3) * 8 - 4;
@@ -233,5 +233,5 @@ public class Pacman extends PacmanEntity {
     public void hideAll() {
         this.setVisible(false);
     }
-    
+
 }

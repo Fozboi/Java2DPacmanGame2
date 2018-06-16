@@ -1,11 +1,11 @@
-package br.ol.pacman.engine;
+package pacman.engine;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 class BitmapFontRenderer {
-    
+
     private BufferedImage bitmapFontImage;
     private BufferedImage[] letters;
     private int letterWidth;
@@ -19,7 +19,7 @@ class BitmapFontRenderer {
                        final int rows) {
         loadFont(fontRes, cols, rows);
     }
-    
+
     void drawText(final Graphics2D g,
                   final String text,
                   final int x,
@@ -55,7 +55,7 @@ class BitmapFontRenderer {
             throw new RuntimeException(ex);
         }
     }
-    
+
     private void loadFont(final BufferedImage image,
                           final Integer cols,
                           final Integer rows) {
@@ -75,5 +75,5 @@ class BitmapFontRenderer {
             }
         }
     }
-    
+
 }
