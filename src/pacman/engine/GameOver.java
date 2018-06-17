@@ -3,26 +3,25 @@ package pacman.engine;
 
 import pacman.engine.PacmanGame.State;
 
-public class GameOver extends PacmanEntity {
+public class GameOver extends PacManEntity {
 
     GameOver(final PacmanGame game) {
         super(game);
-        this.x = 77;
-        this.y = 160;
+        this.setX(77);
+        this.setY(160);
         loadFrames("/resources/gameover.png");
     }
 
     @Override
     public void update() {
-        System.out.println("visible = " +this.isVisible());
         if (this.getGame().getState() == State.GAME_OVER) {
             while (true) {
-                switch (this.instructionPointer) {
+                switch (this.getInstructionPointer()) {
                     case 0:
-                        this.startTime = System.currentTimeMillis();
-                        this.instructionPointer = 1;
+                        this.setStartTime(System.currentTimeMillis());
+                        this.setInstructionPointer(1);
                     case 1:
-                        if (System.currentTimeMillis() - this.startTime < 3000) {
+                        if (System.currentTimeMillis() - this.getStartTime() < 3000) {
                             return;
                         }
                         this.getGame().returnToTitle();
@@ -37,11 +36,8 @@ public class GameOver extends PacmanEntity {
         this.setVisible(false);
         if (this.getGame().getState() == State.GAME_OVER) {
             this.setVisible(true);
-            this.instructionPointer = 0;
+            this.setInstructionPointer(0);
         }
-    }
-
-    public void showAll() {
     }
 
 }

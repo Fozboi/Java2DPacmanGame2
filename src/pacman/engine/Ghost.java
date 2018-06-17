@@ -7,7 +7,7 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ghost extends PacmanEntity {
+public class Ghost extends PacManEntity {
 
     private final Pacman pacman;
     private final int type;
@@ -33,7 +33,7 @@ public class Ghost extends PacmanEntity {
         return this.col;
     }
 
-    void setCol(final int col) {
+    private void setCol(final int col) {
         this.col = col;
     }
 
@@ -41,11 +41,11 @@ public class Ghost extends PacmanEntity {
         return this.row;
     }
 
-    void setRow(final int row) {
+    private void setRow(final int row) {
         this.row = row;
     }
 
-    public enum Mode {
+    private enum Mode {
         CAGE,
         NORMAL,
         VULNERABLE,
@@ -59,7 +59,7 @@ public class Ghost extends PacmanEntity {
         this.pacman = pacman;
         this.type = type;
         this.pathFinder = new ShortestPathFinder(game.maze);
-        String[] ghostFrameNames = new String[8 + 4 + 4];
+        final String[] ghostFrameNames = new String[8 + 4 + 4];
         for (int i = 0; i < 8; i++) {
             ghostFrameNames[i] = "/resources/ghost_" + this.type + "_" + i + ".png";
         }
@@ -70,7 +70,7 @@ public class Ghost extends PacmanEntity {
             ghostFrameNames[12 + i] = "/resources/ghost_died_" + i + ".png";
         }
         loadFrames(ghostFrameNames);
-        this.boundingBox = new Rectangle(0, 0, 6, 6);
+        this.setBoundingBox(new Rectangle(0, 0, 6, 6));
         setMode(Mode.CAGE);
     }
 
@@ -88,8 +88,8 @@ public class Ghost extends PacmanEntity {
     }
 
     void updatePosition() {
-        this.x = getTargetX(this.getCol());
-        this.y = getTargetY(this.getRow());
+        this.setX(getTargetX(this.getCol()));
+        this.setY(getTargetY(this.getRow()));
     }
 
     private void updatePosition(int col, int row) {
@@ -99,14 +99,14 @@ public class Ghost extends PacmanEntity {
     }
 
     private boolean moveToTargetPosition(int targetX, int targetY, int velocity) {
-        final int sx = (int) (targetX - this.x);
-        final int sy = (int) (targetY - this.y);
+        final int sx = (int) (targetX - this.getX());
+        final int sy = (int) (targetY - this.getY());
         final int vx = Math.abs(sx) < velocity ? Math.abs(sx) : velocity;
         final int vy = Math.abs(sy) < velocity ? Math.abs(sy) : velocity;
         final int idx = vx * (Integer.compare(sx, 0));
         final int idy = vy * (Integer.compare(sy, 0));
-        this.x += idx;
-        this.y += idy;
+        this.setX(this.getX() + idx);
+        this.setY(this.getY() + idy);
         return sx != 0 || sy != 0;
     }
 
@@ -119,10 +119,10 @@ public class Ghost extends PacmanEntity {
     private void adjustHorizontalOutsideMovement() {
         if (this.getCol() == 1) {
             this.setCol(34);
-            this.x = getTargetX(this.getCol());
+            this.setX(getTargetX(this.getCol()));
         } else if (this.getCol() == 34) {
             this.setCol(1);
-            this.x = getTargetX(this.getCol());
+            this.setX(getTargetX(this.getCol()));
         }
     }
 
@@ -130,23 +130,23 @@ public class Ghost extends PacmanEntity {
     public void update() {
         if (this.getGame().getState() == State.TITLE) {
             int frameIndex = 0;
-            this.x = this.pacman.x + 17 + 17 * this.type;
-            this.y = 200;
-            if (this.pacman.direction == 0) {
+            this.setX(this.pacman.getX() + 17 + 17 * this.type);
+            this.setY(200);
+            if (this.pacman.getDirection() == 0) {
                 frameIndex = 8 + (int) (System.nanoTime() * 0.00000001) % 2;
-            } else if (this.pacman.direction == 2) {
-                frameIndex = 2 * this.pacman.direction + (int) (System.nanoTime() * 0.00000001) % 2;
+            } else if (this.pacman.getDirection() == 2) {
+                frameIndex = 2 * this.pacman.getDirection() + (int) (System.nanoTime() * 0.00000001) % 2;
             }
-            this.frame = this.frames[frameIndex];
+            this.setFrame(this.getFrames()[frameIndex]);
         } else if(this.getGame().getState() == State.PACMAN_DIED) {
             yield:
             while (true) {
-                switch (this.instructionPointer) {
+                switch (this.getInstructionPointer()) {
                     case 0:
-                        this.startTime = System.currentTimeMillis();
-                        this.instructionPointer = 1;
+                        this.setStartTime(System.currentTimeMillis());
+                        this.setInstructionPointer(1);
                     case 1:
-                        if (System.currentTimeMillis() - this.startTime < 1500) {
+                        if (System.currentTimeMillis() - this.getStartTime() < 1500) {
                             break yield;
                         }
                         this.setVisible(false);
@@ -164,18 +164,18 @@ public class Ghost extends PacmanEntity {
         } else if(this.getGame().getState() == State.LEVEL_CLEARED) {
             yield:
             while (true) {
-                switch (this.instructionPointer) {
+                switch (this.getInstructionPointer()) {
                     case 0:
-                        this.startTime = System.currentTimeMillis();
-                        this.instructionPointer = 1;
+                        this.setStartTime(System.currentTimeMillis());
+                        this.setInstructionPointer(1);
                     case 1:
-                        if (System.currentTimeMillis() - this.startTime < 1500) {
+                        if (System.currentTimeMillis() - this.getStartTime() < 1500) {
                             break yield;
                         }
                         this.setVisible(false);
                         setMode(Mode.CAGE);
                         updateAnimation();
-                        this.instructionPointer = 2;
+                        this.setInstructionPointer(2);
                     case 2:
                         break yield;
                 }
@@ -211,60 +211,60 @@ public class Ghost extends PacmanEntity {
                 frameIndex = 12 + this.direction;
                 break;
         }
-        this.frame = this.frames[frameIndex];
+        this.setFrame(this.getFrames()[frameIndex]);
     }
 
     private void updateGhostCage() {
         yield:
         while (true) {
-            switch (this.instructionPointer) {
+            switch (this.getInstructionPointer()) {
                 case 0:
                     Point initialPosition = INITIAL_POSITIONS[this.type];
                     updatePosition(initialPosition.x, initialPosition.y);
-                    this.x -= 4;
+                    this.setX(this.getX() - 4);
                     this.cageUpDownCount = 0;
                     if (this.type == 0) {
-                        this.instructionPointer = 6;
+                        this.setInstructionPointer(6);
                         break;
                     } else if (this.type == 2) {
-                        this.instructionPointer = 2;
+                        this.setInstructionPointer(2);
                         break;
                     }
-                    this.instructionPointer = 1;
+                    this.setInstructionPointer(1);
                 case 1:
-                    if (moveToTargetPosition((int) this.x, 134 + 4, 1)) {
+                    if (moveToTargetPosition((int) this.getX(), 134 + 4, 1)) {
                         break yield;
                     }
-                    this.instructionPointer = 2;
+                    this.setInstructionPointer(2);
                 case 2:
-                    if (moveToTargetPosition((int) this.x, 134 - 4, 1)) {
+                    if (moveToTargetPosition((int) this.getX(), 134 - 4, 1)) {
                         break yield;
                     }
                     this.cageUpDownCount++;
                     if (this.cageUpDownCount <= this.type * 2) {
-                        this.instructionPointer = 1;
+                        this.setInstructionPointer(1);
                         break yield;
                     }
-                    this.instructionPointer = 3;
+                    this.setInstructionPointer(3);
                 case 3:
-                    if (moveToTargetPosition((int) this.x, 134, 1)) {
+                    if (moveToTargetPosition((int) this.getX(), 134, 1)) {
                         break yield;
                     }
-                    this.instructionPointer = 4;
+                    this.setInstructionPointer(4);
                 case 4:
                     if (moveToTargetPosition(105, 134, 1)) {
                         break yield;
                     }
-                    this.instructionPointer = 5;
+                    this.setInstructionPointer(5);
                 case 5:
                     if (moveToTargetPosition(105, 110, 1)) {
                         break yield;
                     }
                     if ((int) (2 * Math.random()) == 0) {
-                        this.instructionPointer = 7;
+                        this.setInstructionPointer(7);
                         continue yield;
                     }
-                    this.instructionPointer = 6;
+                    this.setInstructionPointer(6);
                 case 6:
                     if (moveToTargetPosition(109, 110, 1)) {
                         break yield;
@@ -272,7 +272,7 @@ public class Ghost extends PacmanEntity {
                     this.desiredDirection = 0;
                     this.lastDirection = 0;
                     updatePosition(18, 11);
-                    this.instructionPointer = 8;
+                    this.setInstructionPointer(8);
                     continue yield;
                 case 7:
                     if (moveToTargetPosition(101, 110, 1)) {
@@ -281,7 +281,7 @@ public class Ghost extends PacmanEntity {
                     this.desiredDirection = 2;
                     this.lastDirection = 2;
                     updatePosition(17, 11);
-                    this.instructionPointer = 8;
+                    this.setInstructionPointer(8);
                 case 8:
                     setMode(Mode.NORMAL);
                     break yield;
@@ -305,7 +305,7 @@ public class Ghost extends PacmanEntity {
         }
 
         if (this.type == 0 || this.type == 1) {
-            updateGhostMovement(true, this.pacman.col, this.pacman.row, this.pacmanCatchedAction, 0, 1, 2, 3); // chase movement
+            updateGhostMovement(true, this.pacman.getCol(), this.pacman.getRow(), this.pacmanCatchedAction, 0, 1, 2, 3); // chase movement
         } else {
             updateGhostMovement(false, 0, 0, this.pacmanCatchedAction, 0, 1, 2, 3); // random movement
         }
@@ -325,7 +325,7 @@ public class Ghost extends PacmanEntity {
             this.markAsVulnerable = false;
         }
 
-        updateGhostMovement(true, this.pacman.col, this.pacman.row, this.ghostCatchedAction, 2, 3, 0, 1); // run away movement
+        updateGhostMovement(true, this.pacman.getCol(), this.pacman.getRow(), this.ghostCatchedAction, 2, 3, 0, 1); // run away movement
         // return to normal mode after 8 seconds
         if (!checkVulnerableModeTime()) {
             setMode(Mode.NORMAL);
@@ -339,44 +339,44 @@ public class Ghost extends PacmanEntity {
     private void updateGhostDied() {
         yield:
         while (true) {
-            switch (this.instructionPointer) {
+            switch (this.getInstructionPointer()) {
                 case 0:
                     this.pathFinder.find(this.getCol(), this.getRow(), 18, 11);
-                    this.instructionPointer = 1;
+                    this.setInstructionPointer(1);
                 case 1:
                     if (!this.pathFinder.hasNext()) {
-                        this.instructionPointer = 3;
+                        this.setInstructionPointer(3);
                         continue yield;
                     }
                     Point nextPosition = this.pathFinder.getNext();
                     this.setCol(nextPosition.x);
                     this.setRow(nextPosition.y);
-                    this.instructionPointer = 2;
+                    this.setInstructionPointer(2);
                 case 2:
                     if (!moveToGridPosition(this.getCol(), this.getRow(), 4)) {
                         if (this.getRow() == 11 && (this.getCol() == 17 || this.getCol() == 18)) {
-                            this.instructionPointer = 3;
+                            this.setInstructionPointer(3);
                             continue yield;
                         }
-                        this.instructionPointer = 1;
+                        this.setInstructionPointer(1);
                         continue yield;
                     }
                     break yield;
                 case 3:
                     if (!moveToTargetPosition(105, 110, 4)) {
-                        this.instructionPointer = 4;
+                        this.setInstructionPointer(4);
                         continue yield;
                     }
                     break yield;
                 case 4:
                     if (!moveToTargetPosition(105, 134, 4)) {
-                        this.instructionPointer = 5;
+                        this.setInstructionPointer(5);
                         continue yield;
                     }
                     break yield;
                 case 5:
                     setMode(Mode.CAGE);
-                    this.instructionPointer = 4;
+                    this.setInstructionPointer(4);
                     break yield;
             }
         }
@@ -408,7 +408,7 @@ public class Ghost extends PacmanEntity {
 
         yield:
         while (true) {
-            switch (this.instructionPointer) {
+            switch (this.getInstructionPointer()) {
                 case 0:
                     if ((this.getRow() == 14 && this.getCol() == 1 && this.lastDirection == 2)
                             || (this.getRow() == 14 && this.getCol() == 34 && this.lastDirection == 0)) {
@@ -435,11 +435,11 @@ public class Ghost extends PacmanEntity {
 
                     this.setCol(this.getCol() + dx);
                     this.setRow(this.getRow() + dy);
-                    this.instructionPointer = 1;
+                    this.setInstructionPointer(1);
                 case 1:
                     if (!moveToGridPosition(this.getCol(), this.getRow(), 1)) {
                         this.lastDirection = this.direction;
-                        this.instructionPointer = 0;
+                        this.setInstructionPointer(0);
                         // adjustHorizontalOutsideMovement();
                     }
                     if (collisionWithPacmanAction != null && checkCollisionWithPacman()) {
@@ -453,23 +453,22 @@ public class Ghost extends PacmanEntity {
     private boolean checkCollisionWithPacman() {
         this.pacman.updateBoundingBox();
         updateBoundingBox();
-        return this.pacman.boundingBox.intersects(this.boundingBox);
+        return this.pacman.getBoundingBox().intersects(this.getBoundingBox());
     }
 
     @Override
     public void updateBoundingBox() {
-        this.boundingBox.setLocation((int) (this.x + 4), (int) (this.y + 4));
+        this.getBoundingBox().setLocation((int) (this.getX() + 4), (int) (this.getY() + 4));
     }
 
     private void modeChanged() {
-        this.instructionPointer = 0;
+        this.setInstructionPointer(0);
     }
 
     @Override
     public void stateChanged() {
         if (this.getGame().getState() == PacmanGame.State.TITLE) {
             update();
-            //updateTitle();
             this.setVisible(true);
         } else if (this.getGame().getState() == PacmanGame.State.READY) {
             this.setVisible(false);
@@ -478,13 +477,13 @@ public class Ghost extends PacmanEntity {
             updateAnimation();
             Point initialPosition = INITIAL_POSITIONS[this.type];
             updatePosition(initialPosition.x, initialPosition.y); // col, row
-            this.x -= 4;
+            this.setX(this.getX() - 4);
         } else if (this.getGame().getState() == PacmanGame.State.PLAYING && this.mode != Mode.CAGE) {
-            this.instructionPointer = 0;
+            this.setInstructionPointer(0);
         } else if (this.getGame().getState() == PacmanGame.State.PACMAN_DIED) {
-            this.instructionPointer = 0;
+            this.setInstructionPointer(0);
         } else if (this.getGame().getState() == PacmanGame.State.LEVEL_CLEARED) {
-            this.instructionPointer = 0;
+            this.setInstructionPointer(0);
         }
     }
 

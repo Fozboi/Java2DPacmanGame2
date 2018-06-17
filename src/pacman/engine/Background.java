@@ -4,7 +4,7 @@ import pacman.engine.PacmanGame.State;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-class Background extends PacmanEntity {
+class Background extends PacManEntity {
 
     private final boolean showBlockedCellColor = false;
     private final Color blockedCellColor = new Color(255, 0, 0, 128);
@@ -18,49 +18,51 @@ class Background extends PacmanEntity {
     @Override
     public void update() {
         if(this.getGame().getState() == State.LEVEL_CLEARED) {
-            while (true) {
-                switch (this.instructionPointer) {
+                switch (this.getInstructionPointer()) {
                     case 0:
                         this.frameCount = 0;
-                        this.startTime = System.currentTimeMillis();
-                        this.instructionPointer = 1;
+                        this.setStartTime(System.currentTimeMillis());
+                        this.setInstructionPointer(1);
+                        break;
                     case 1:
-                        if (System.currentTimeMillis() - this.startTime < 1500) {
+                        if (System.currentTimeMillis() - this.getStartTime() < 1500) {
                             return;
                         }
-                        this.instructionPointer = 2;
+                        this.setInstructionPointer(2);
+                        break;
                     case 2:
-                        this.frame = this.frames[1];
-                        this.startTime = System.currentTimeMillis();
-                        this.instructionPointer = 3;
+                        this.setFrame(this.getFrames()[1]);
+                        this.setStartTime(System.currentTimeMillis());
+                        this.setInstructionPointer(3);
                     case 3:
-                        if (System.currentTimeMillis() - this.startTime < 200) {
+                        if (System.currentTimeMillis() - this.getStartTime() < 200) {
                             return;
                         }
-                        this.frame = this.frames[0];
-                        this.startTime = System.currentTimeMillis();
-                        this.instructionPointer = 4;
+                        this.setFrame(this.getFrames()[0]);
+                        this.setStartTime(System.currentTimeMillis());
+                        this.setInstructionPointer(4);
+                        break;
                     case 4:
-                        if (System.currentTimeMillis() - this.startTime < 200) {
+                        if (System.currentTimeMillis() - this.getStartTime() < 200) {
                             return;
                         }
                         this.frameCount++;
                         if (this.frameCount < 5) {
-                            this.instructionPointer = 2;
+                            this.setInstructionPointer(2);
                             return;
                         }
                         this.getGame().hideAll();
-                        this.startTime = System.currentTimeMillis();
-                        this.instructionPointer = 5;
+                        this.setStartTime(System.currentTimeMillis());
+                        this.setInstructionPointer(5);
+                        break;
                     case 5:
-                        if (System.currentTimeMillis() - this.startTime < 500) {
+                        if (System.currentTimeMillis() - this.getStartTime() < 500) {
                             return;
                         }
                         this.setVisible(true);
                         this.getGame().nextLevel();
-                        return;
+                        break;
                 }
-            }
         }
     }
 
@@ -88,7 +90,7 @@ class Background extends PacmanEntity {
             this.setVisible(true);
         }
         else if (this.getGame().getState() == State.LEVEL_CLEARED) {
-            this.instructionPointer = 0;
+            this.setInstructionPointer(0);
         }
     }
 

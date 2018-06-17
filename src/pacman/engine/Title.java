@@ -6,44 +6,44 @@ import pacman.engine.PacmanGame.State;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
-public class Title extends PacmanEntity {
+public class Title extends PacManEntity {
 
-    private boolean pushSpaceToStartVisible;
+    private boolean pushSpaceToStart;
 
     Title(final PacmanGame game) {
         super(game);
         loadFrames("/resources/title.png");
-        this.x = 21;
-        this.y = 100;
+        this.setX(21);
+        this.setY(100);
     }
 
     @Override
     public void update() {
         if(this.getGame().getState() == State.TITLE) {
-                switch (this.instructionPointer) {
+                switch (this.getInstructionPointer()) {
                     case 0:
-                        this.startTime = System.currentTimeMillis();
-                        this.instructionPointer = 1;
+                        this.setStartTime(System.currentTimeMillis());
+                        this.setInstructionPointer(1);
                     case 1:
-                        if (System.currentTimeMillis() - this.startTime < 500) {
+                        if (System.currentTimeMillis() - this.getStartTime() < 500) {
                             break;
                         }
-                        this.instructionPointer = 2;
+                        this.setInstructionPointer(2);
                     case 2:
-                        double dy = 100 - this.y;
-                        this.y = this.y + dy * 0.1;
+                        double dy = 100 - this.getY();
+                        this.setY(this.getY() + dy * 0.1);
                         if (Math.abs(dy) < 1) {
-                            this.startTime = System.currentTimeMillis();
-                            this.instructionPointer = 3;
+                            this.setStartTime(System.currentTimeMillis());
+                            this.setInstructionPointer(3);
                         }
                         break;
                     case 3:
-                        if (System.currentTimeMillis() - this.startTime < 200) {
+                        if (System.currentTimeMillis() - this.getStartTime() < 200) {
                             break;
                         }
-                        this.instructionPointer = 4;
+                        this.setInstructionPointer(4);
                     case 4:
-                        this.pushSpaceToStartVisible = ((int) (System.nanoTime() * 0.0000000075) % 3) > 0;
+                        this.pushSpaceToStart = ((int) (System.nanoTime() * 0.0000000075) % 3) > 0;
                         if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_SPACE]) {
                             this.getGame().startGame();
                         }
@@ -57,7 +57,7 @@ public class Title extends PacmanEntity {
             return;
         }
         super.draw(g);
-        if (this.pushSpaceToStartVisible) {
+        if (this.pushSpaceToStart) {
             this.getGame().drawText(g, "PUSH SPACE TO START", 37, 170);
         }
         this.getGame().drawText(g, "PROGRAMMED BY O.L. 2017", 20, 240);
@@ -68,10 +68,10 @@ public class Title extends PacmanEntity {
     public void stateChanged() {
         this.setVisible(false);
         if (this.getGame().getState() == State.TITLE) {
-            this.y = -150;
+            this.setY(-150);
             this.setVisible(true);
-            this.pushSpaceToStartVisible = false;
-            this.instructionPointer = 0;
+            this.pushSpaceToStart = false;
+            this.setInstructionPointer(0);
         }
     }
 

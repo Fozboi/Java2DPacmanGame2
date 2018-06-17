@@ -2,16 +2,13 @@ package pacman.engine;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class PacmanGame {
 
-    private final Dimension screenSize;
-    private final Point2D screenScale;
-    private final List<PacmanEntity> allPacmanEntities = new ArrayList<>();
+    private final List<PacManEntity> allPacmanEntities = new ArrayList<>();
     private final List<Ghost> pacmanGhosts = new ArrayList<>();
     private final Pacman pacman;
     private final BitmapFontRenderer bitmapFontRenderer = new BitmapFontRenderer("/resources/font8x8.png", 16, 16);
@@ -24,13 +21,19 @@ public class PacmanGame {
     private int foodCount;
     private int currentFoodCount;
 
-    final static int[] CAPTURED_GHOST_SCORE_TABLE = { 200, 400, 800, 1600 };
+    private static final int[] CAPTURED_GHOST_SCORE_TABLE = { 200, 400, 800, 1600 };
+    private static final Dimension SCREEN_SIZE = new Dimension(224, 288);
+    private static final Point2D SCREEN_SCALE = new Point2D.Double(2, 2);
+
+     static int[] getCapturedGhostScoreTable() {
+        return CAPTURED_GHOST_SCORE_TABLE;
+    }
 
     Ghost getCaughtGhost() {
         return this.caughtGhost;
     }
 
-    private void setCaughtGhost(Ghost caughtGhost) {
+    private void setCaughtGhost(final Ghost caughtGhost) {
         this.caughtGhost = caughtGhost;
     }
 
@@ -38,7 +41,7 @@ public class PacmanGame {
         return this.caughtGhostScoreTableIndex;
     }
 
-    void setCaughtGhostScoreTableIndex(int caughtGhostScoreTableIndex) {
+    void setCaughtGhostScoreTableIndex(final int caughtGhostScoreTableIndex) {
         this.caughtGhostScoreTableIndex = caughtGhostScoreTableIndex;
     }
 
@@ -46,7 +49,7 @@ public class PacmanGame {
         return this.currentFoodCount;
     }
 
-    void setCurrentFoodCount(int currentFoodCount) {
+    void setCurrentFoodCount(final int currentFoodCount) {
         this.currentFoodCount = currentFoodCount;
     }
 
@@ -98,22 +101,20 @@ public class PacmanGame {
     };
 
     public PacmanGame() {
-        this.screenSize = new Dimension(224, 288);
-        this.screenScale = new Point2D.Double(2, 2);
         this.setState(State.INITIALIZING);
         this.setLives(3);
         this.pacman = new Pacman(this);
     }
 
     Dimension getScreenSize() {
-        return this.screenSize;
+        return SCREEN_SIZE;
     }
 
     Point2D getScreenScale() {
-        return this.screenScale;
+        return SCREEN_SCALE;
     }
 
-    private List<PacmanEntity> getAllPacmanEntities() {
+    private List<PacManEntity> getAllPacmanEntities() {
         return this.allPacmanEntities;
     }
 
@@ -132,7 +133,7 @@ public class PacmanGame {
     public void setState(final State state) {
         if (this.state != state) {
             this.state = state;
-            for(final PacmanEntity entity : this.getAllPacmanEntities()) {
+            for(final PacManEntity entity : this.getAllPacmanEntities()) {
                 entity.stateChanged();
             }
         }
@@ -157,20 +158,16 @@ public class PacmanGame {
         return hiscoreStr;
     }
 
-    void init() {
-        addAllObjs();
-    }
-
-    private void addAllObjs() {
+    void initializeGameObjects() {
         this.getAllPacmanEntities().add(new Initializer(this));
         this.getAllPacmanEntities().add(new OLPresents(this));
         this.getAllPacmanEntities().add(new Title(this));
         this.getAllPacmanEntities().add(new Background(this));
         this.foodCount = 0;
-        for (int row=0; row<31; row++) {
-            for (int col=0; col<36; col++) {
+        for (int row = 0; row < 31; row++) {
+            for (int col = 0; col < 36; col++) {
                 if (this.maze[row][col] == 1) {
-                    this.maze[row][col] = -1; // wall convert to -1 for ShortestPathFinder
+                    this.maze[row][col] = -1;
                 }
                 else if (this.maze[row][col] == 2) {
                     this.maze[row][col] = 0;
@@ -184,7 +181,7 @@ public class PacmanGame {
             }
         }
 
-        for (int i=0; i<4; i++) {
+        for (int i = 0; i < 4; i++) {
             final Ghost ghost = new Ghost(this, this.pacman, i);
             this.allPacmanEntities.add(ghost);
             this.pacmanGhosts.add(ghost);
@@ -216,7 +213,7 @@ public class PacmanGame {
         }
     }
 
-    void ghostCatched(Ghost ghost) {
+    void ghostCatched(final Ghost ghost) {
         this.setCaughtGhost(ghost);
         setState(State.GHOST_CAPTURED);
     }
@@ -246,13 +243,13 @@ public class PacmanGame {
     }
 
     void update() {
-        for (final PacmanEntity actor : this.getAllPacmanEntities()) {
+        for (final PacManEntity actor : this.getAllPacmanEntities()) {
             actor.update();
         }
     }
 
     void draw(final Graphics2D g) {
-        for (final PacmanEntity actor : this.getAllPacmanEntities()) {
+        for (final PacManEntity actor : this.getAllPacmanEntities()) {
             actor.draw(g);
         }
     }
@@ -260,37 +257,27 @@ public class PacmanGame {
     boolean pelletConsumed(final Pellet pellet) {
         pellet.updateBoundingBox();
         this.pacman.updateBoundingBox();
-        return pellet.boundingBox != null && this.pacman.boundingBox != null
+        return pellet.getBoundingBox() != null && this.pacman.getBoundingBox() != null
                 && pellet.isVisible() && this.pacman.isVisible()
-                && pellet.boundingBox.intersects(this.pacman.boundingBox);
-    }
-
-    void broadcastMessage(String message) {
-        for (final PacmanEntity obj : this.getAllPacmanEntities()) {
-            try {
-                final Method method = obj.getClass().getMethod(message);
-                if (method != null) {
-                    method.invoke(obj);
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+                && pellet.getBoundingBox().intersects(this.pacman.getBoundingBox());
     }
 
     void showAll() {
-        for (final PacmanEntity obj : this.getAllPacmanEntities()) {
+        for (final PacManEntity obj : this.getAllPacmanEntities()) {
             obj.showAll();
         }
     }
 
     void hideAll() {
-        for (final PacmanEntity obj : this.getAllPacmanEntities()) {
+        for (final PacManEntity obj : this.getAllPacmanEntities()) {
             obj.hideAll();
         }
     }
 
-    void drawText(Graphics2D g, String text, int x, int y) {
+    void drawText(final Graphics2D g,
+                  final String text,
+                  final int x,
+                  final int y) {
         this.bitmapFontRenderer.drawText(g, text, x, y);
     }
 

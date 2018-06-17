@@ -1,10 +1,8 @@
 package pacman.engine;
 
-abstract class Pellet extends PacmanEntity {
+abstract class Pellet extends PacManEntity {
 
-    Pellet(final PacmanGame game,
-           final int col,
-           final int row) {
+    Pellet(final PacmanGame game) {
         super(game);
     }
 

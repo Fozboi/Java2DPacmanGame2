@@ -68,8 +68,8 @@ class BitmapFontRenderer {
         for (int y=0; y<rows; y++) {
             for (int x=0; x<cols; x++) {
                 this.letters[y * cols + x] = new BufferedImage(this.letterWidth, this.letterHeight, BufferedImage.TYPE_INT_ARGB);
-                final Graphics2D ig = (Graphics2D) this.letters[y * cols + x].getGraphics();
-                ig.drawImage(this.bitmapFontImage, 0, 0, this.letterWidth, this.letterHeight
+                final Graphics2D graphics2D = (Graphics2D) this.letters[y * cols + x].getGraphics();
+                graphics2D.drawImage(this.bitmapFontImage, 0, 0, this.letterWidth, this.letterHeight
                         , x * this.letterWidth, y * this.letterHeight
                         , x * this.letterWidth + this.letterWidth, y * this.letterHeight + this.letterHeight, null);
             }

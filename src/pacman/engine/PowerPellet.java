@@ -10,11 +10,11 @@ public class PowerPellet extends Pellet {
     PowerPellet(final PacmanGame game,
                 final int col,
                 final int row) {
-        super(game, col, row);
+        super(game);
         loadFrames("/resources/powerBall.png");
-        this.x = col * 8 + 1 - 32;
-        this.y = (row + 3) * 8 + 1;
-        this.boundingBox = new Rectangle(0, 0, 4, 4);
+        this.setX(col * 8 + 1 - 32);
+        this.setY((row + 3) * 8 + 1);
+        this.setBoundingBox(new Rectangle(0, 0, 4, 4));
         this.eaten = true;
     }
 

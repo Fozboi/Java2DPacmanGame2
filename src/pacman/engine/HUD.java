@@ -2,7 +2,7 @@ package pacman.engine;
 
 import java.awt.Graphics2D;
 
-public class HUD extends PacmanEntity {
+public class HUD extends PacManEntity {
 
     HUD(final PacmanGame game) {
         super(game);
@@ -24,7 +24,7 @@ public class HUD extends PacmanEntity {
         this.getGame().drawText(g, this.getGame().getHighScore(), 90, 10);
         this.getGame().drawText(g, "LIVES: ", 10, 274);
         for (int lives = 0; lives < this.getGame().getLives(); lives++) {
-            g.drawImage(this.frame, 60 + 20 * lives, 272, null);
+            g.drawImage(this.getFrame(), 60 + 20 * lives, 272, null);
         }
     }
 

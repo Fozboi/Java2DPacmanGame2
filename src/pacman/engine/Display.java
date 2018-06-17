@@ -21,18 +21,17 @@ class Display extends Canvas {
     }
 
     void start() {
-        if (this.isRunning()) {
-            return;
+        if (!this.isRunning()) {
+            createBufferStrategy(3);
+            this.bs = getBufferStrategy();
+            this.getGame().initializeGameObjects();
+            this.running = true;
+            Thread thread = new Thread(new MainLoop(this));
+            thread.start();
         }
-        createBufferStrategy(3);
-        this.bs = getBufferStrategy();
-        this.getGame().init();
-        this.running = true;
-        Thread thread = new Thread(new MainLoop(this));
-        thread.start();
     }
 
-    public PacmanGame getGame() {
+    private PacmanGame getGame() {
         return this.game;
     }
 
@@ -83,7 +82,7 @@ class Display extends Canvas {
         this.getGame().update();
     }
 
-    private void draw(Graphics2D g) {
+    private void draw(final Graphics2D g) {
         this.getGame().draw(g);
     }
 

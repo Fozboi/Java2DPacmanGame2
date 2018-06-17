@@ -5,9 +5,9 @@ import pacman.engine.PacmanGame.State;
 
 import java.awt.*;
 
-public class OLPresents extends PacmanEntity {
+public class OLPresents extends PacManEntity {
 
-    private final String text = "O.L. PRESENTS";
+    private final String text = "I <3 Jasmine Afghani";
     private int textIndex;
 
     OLPresents(final PacmanGame game) {
@@ -19,39 +19,42 @@ public class OLPresents extends PacmanEntity {
         if (this.getGame().getState() != State.OL_PRESENTS) {
             return;
         }
-        switch (this.instructionPointer) {
+        switch (this.getInstructionPointer()) {
             case 0:
-                this.startTime = System.currentTimeMillis();
-                this.instructionPointer = 1;
+                this.setStartTime(System.currentTimeMillis());
+                this.setInstructionPointer(1);
                 break;
             case 1:
-                if (System.currentTimeMillis() - this.startTime < 100) {
+                if (System.currentTimeMillis() - this.getStartTime() < 100) {
                     break;
                 }
                 this.textIndex++;
                 if (this.textIndex < this.text.length()) {
-                    this.instructionPointer = 0;
+                    this.setInstructionPointer(0);
                     break;
                 }
-                this.startTime = System.currentTimeMillis();
-                this.instructionPointer = 2;
+                this.setStartTime(System.currentTimeMillis());
+                this.setInstructionPointer(2);
+                break;
             case 2:
-                if (System.currentTimeMillis() - this.startTime < 3000) {
+                if (System.currentTimeMillis() - this.getStartTime() < 3000) {
                     break;
                 }
                 this.setVisible(false);
-                this.startTime = System.currentTimeMillis();
-                this.instructionPointer = 3;
+                this.setStartTime(System.currentTimeMillis());
+                this.setInstructionPointer(3);
+                break;
             case 3:
-                if (System.currentTimeMillis() - this.startTime < 1500) {
+                if (System.currentTimeMillis() - this.getStartTime() < 1500) {
                     break;
                 }
                 this.getGame().setState(State.TITLE);
+                break;
         }
     }
 
     @Override
-    public void draw(Graphics2D g) {
+    public void draw(final Graphics2D g) {
         if (this.isVisible()) {
             this.getGame().drawText(g, this.text.substring(0, this.textIndex), 60, 130);
         }
