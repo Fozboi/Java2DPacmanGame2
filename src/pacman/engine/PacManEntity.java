@@ -26,6 +26,30 @@ abstract class PacManEntity {
         this.game = game;
     }
 
+    double getX() {
+        return this.x;
+    }
+
+    double getY() {
+        return this.y;
+    }
+
+    BufferedImage getFrame() {
+        return this.frame;
+    }
+
+    BufferedImage[] getFrames() {
+        return this.frames;
+    }
+
+    int getInstructionPointer() {
+        return this.instructionPointer;
+    }
+
+    Rectangle getBoundingBox() {
+        return this.boundingBox;
+    }
+
     public abstract void update();
 
     public abstract void stateChanged();
@@ -80,48 +104,24 @@ abstract class PacManEntity {
     public void hideAll() {
     }
 
-    double getX() {
-        return this.x;
-    }
-
     void setX(final double x) {
         this.x = x;
-    }
-
-    double getY() {
-        return this.y;
     }
 
     void setY(final double y) {
         this.y = y;
     }
 
-    BufferedImage getFrame() {
-        return this.frame;
-    }
-
     void setFrame(final BufferedImage frame) {
         this.frame = frame;
-    }
-
-    BufferedImage[] getFrames() {
-        return this.frames;
     }
 
     private void setFrames(final BufferedImage[] frames) {
         this.frames = frames;
     }
 
-    Rectangle getBoundingBox() {
-        return this.boundingBox;
-    }
-
     void setBoundingBox(final Rectangle boundingBox) {
         this.boundingBox = boundingBox;
-    }
-
-    int getInstructionPointer() {
-        return this.instructionPointer;
     }
 
     void setInstructionPointer(final int instructionPointer) {

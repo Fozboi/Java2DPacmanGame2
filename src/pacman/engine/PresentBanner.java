@@ -5,12 +5,12 @@ import pacman.engine.PacmanGame.State;
 
 import java.awt.*;
 
-public class OLPresents extends PacManEntity {
+public class PresentBanner extends PacManEntity {
 
-    private final String text = "I <3 Jasmine Afghani";
+    private final String text = "Presenting ...";
     private int textIndex;
 
-    OLPresents(final PacmanGame game) {
+    PresentBanner(final PacmanGame game) {
         super(game);
     }
 

@@ -19,7 +19,7 @@ public class NormalPellet extends Pellet {
     @Override
     public void update() {
         if (this.getGame().getState() == PacmanGame.State.PLAYING) {
-            if (this.getGame().pelletConsumed(this)) {
+            if (this.getGame().consumePellet(this)) {
                 this.setVisible(false);
                 this.getGame().setCurrentFoodCount(this.getGame().getCurrentFoodCount() - 1);
                 this.getGame().addScore(10);

@@ -5,12 +5,8 @@ import java.awt.Rectangle;
 
 public class Point extends PacManEntity {
 
-    private final Pacman pacman;
-
-    Point(final PacmanGame game,
-          final Pacman pacman) {
+    Point(final PacmanGame game) {
         super(game);
-        this.pacman = pacman;
         loadFrames("/resources/point_0.png",
                 "/resources/point_1.png"
                 , "/resources/point_2.png", "/resources/point_3.png");
@@ -29,7 +25,7 @@ public class Point extends PacManEntity {
                 switch (this.getInstructionPointer()) {
                     case 0:
                         updatePosition(this.getGame().getCaughtGhost().getCol(), this.getGame().getCaughtGhost().getRow());
-                        this.pacman.setVisible(false);
+                        this.getGame().getPacman().setVisible(false);
                         this.getGame().getCaughtGhost().setVisible(false);
                         int frameIndex = this.getGame().getCaughtGhostScoreTableIndex();
                         this.setFrame(this.getFrames()[frameIndex]);
@@ -39,8 +35,8 @@ public class Point extends PacManEntity {
                         this.setInstructionPointer(1);
                         break;
                     case 1:
-                        this.pacman.setVisible(true);
-                        this.pacman.updatePosition();
+                        this.getGame().getPacman().setVisible(true);
+                        this.getGame().getPacman().updatePosition();
                         this.getGame().getCaughtGhost().setVisible(true);
                         this.getGame().getCaughtGhost().updatePosition();
                         this.getGame().getCaughtGhost().died();

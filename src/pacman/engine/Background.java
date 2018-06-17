@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 
 class Background extends PacManEntity {
 
-    private final boolean showBlockedCellColor = false;
+    private final boolean showBlockedCellColor = true;
     private final Color blockedCellColor = new Color(255, 0, 0, 128);
     private int frameCount;
 
@@ -71,8 +71,8 @@ class Background extends PacManEntity {
         super.draw(g);
         if (this.showBlockedCellColor) {
             g.setColor(this.blockedCellColor);
-            for (int row=0; row<31; row++) {
-                for (int col=0; col<36; col++) {
+            for (int row = 0; row < 31; row++) {
+                for (int col = 0; col < 36; col++) {
                     if (this.getGame().maze[row][col] == 1) {
                         g.fillRect(col * 8 - 32, (row + 3) * 8, 8, 8);
                     }

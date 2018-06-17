@@ -4,9 +4,9 @@ import pacman.engine.PacmanGame.State;
 
 import java.awt.*;
 
-class Initializer extends PacManEntity {
+class InitializationBanner extends PacManEntity {
 
-    Initializer(final PacmanGame game) {
+    InitializationBanner(final PacmanGame game) {
         super(game);
     }
 
@@ -36,7 +36,7 @@ class Initializer extends PacManEntity {
     @Override
     public void draw(Graphics2D g) {
         if (this.isVisible()) {
-            this.getGame().drawText(g, "Hi Jasmine!", 60, 130);
+            this.getGame().drawText(g, "Initializing !", 60, 130);
         }
     }
 

@@ -14,8 +14,12 @@ class KeyBoard extends KeyAdapter {
         this.keyPressed = new boolean[256];
     }
 
-    public static KeyBoard get() {
+    static KeyBoard get() {
         return INSTANCE;
+    }
+
+    boolean[] getKeyPressed() {
+        return this.keyPressed;
     }
 
     @Override
@@ -28,7 +32,4 @@ class KeyBoard extends KeyAdapter {
         this.getKeyPressed()[e.getKeyCode()] = false;
     }
 
-    public boolean[] getKeyPressed() {
-        return this.keyPressed;
-    }
 }

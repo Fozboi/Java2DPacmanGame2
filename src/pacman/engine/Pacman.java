@@ -25,11 +25,23 @@ public class Pacman extends PacManEntity {
             pacmanFrameNames[16 + i] = "/resources/pacman_died_" + i + ".png";
         }
         loadFrames(pacmanFrameNames);
-        reset();
+        placePacmanAtStartPosition();
         this.setBoundingBox(new Rectangle(0, 0, 6, 6));
     }
 
-    private void reset() {
+    int getDirection() {
+        return this.direction;
+    }
+
+    int getRow() {
+        return this.row;
+    }
+
+    int getCol() {
+        return this.col;
+    }
+
+    private void placePacmanAtStartPosition() {
         this.setCol(18);
         this.setRow(23);
         updatePosition();
@@ -193,7 +205,7 @@ public class Pacman extends PacManEntity {
         } else if (this.getGame().getState() == State.READY) {
             this.setVisible(false);
         } else if (this.getGame().getState() == State.READY2) {
-            reset();
+            placePacmanAtStartPosition();
         } else if (this.getGame().getState() == State.PLAYING) {
             this.setInstructionPointer(0);
         } else if (this.getGame().getState() == State.PACMAN_DIED) {
@@ -211,24 +223,12 @@ public class Pacman extends PacManEntity {
         this.setVisible(false);
     }
 
-    int getDirection() {
-        return this.direction;
-    }
-
     private void setDirection(int direction) {
         this.direction = direction;
     }
 
-    int getRow() {
-        return this.row;
-    }
-
     private void setRow(int row) {
         this.row = row;
-    }
-
-    int getCol() {
-        return this.col;
     }
 
     private void setCol(int col) {

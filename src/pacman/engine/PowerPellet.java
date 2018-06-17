@@ -24,7 +24,7 @@ public class PowerPellet extends Pellet {
         if (this.eaten || this.getGame().getState() == State.PACMAN_DIED) {
             return;
         }
-        if (this.getGame().pelletConsumed(this)) {
+        if (this.getGame().consumePellet(this)) {
             this.eaten = true;
             this.setVisible(false);
             this.getGame().addScore(50);

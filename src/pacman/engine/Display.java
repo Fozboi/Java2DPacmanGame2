@@ -20,10 +20,18 @@ class Display extends Canvas {
         addKeyListener(KeyBoard.get());
     }
 
+    private PacmanGame getGame() {
+        return this.game;
+    }
+
+    private boolean isRunning() {
+        return this.running;
+    }
+
     void start() {
         if (!this.isRunning()) {
             createBufferStrategy(3);
-            this.bs = getBufferStrategy();
+            this.setDisplayBuffer(getBufferStrategy());
             this.getGame().initializeGameObjects();
             this.running = true;
             Thread thread = new Thread(new MainLoop(this));
@@ -31,12 +39,12 @@ class Display extends Canvas {
         }
     }
 
-    private PacmanGame getGame() {
-        return this.game;
+    public BufferStrategy getDisplayBuffer() {
+        return this.bs;
     }
 
-    private boolean isRunning() {
-        return this.running;
+    public void setDisplayBuffer(BufferStrategy bs) {
+        this.bs = bs;
     }
 
     private class MainLoop implements Runnable {
@@ -60,30 +68,22 @@ class Display extends Canvas {
                 lastTime = currentTime;
                 while (unprocessedTime >= desiredFrameRateTime) {
                     unprocessedTime -= desiredFrameRateTime;
-                    update();
+                    this.display.getGame().update();
                     needsRender = true;
                 }
                 if (needsRender) {
-                    final Graphics2D g = (Graphics2D) this.display.bs.getDrawGraphics();
+                    final Graphics2D g = (Graphics2D) this.display.getDisplayBuffer().getDrawGraphics();
                     g.setBackground(Color.BLACK);
                     g.clearRect(0, 0, getWidth(), getHeight());
                     g.scale(this.display.getGame().getScreenScale().getX(), this.display.getGame().getScreenScale().getY());
-                    draw(g);
+                    this.display.getGame().draw(g);
                     g.dispose();
-                    this.display.bs.show();
+                    this.display.getDisplayBuffer().show();
                     needsRender = false;
                 }
             }
         }
 
-    }
-
-    private void update() {
-        this.getGame().update();
-    }
-
-    private void draw(final Graphics2D g) {
-        this.getGame().draw(g);
     }
 
 }

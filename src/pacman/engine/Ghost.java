@@ -29,29 +29,6 @@ public class Ghost extends PacManEntity {
             new Point(18, 14), new Point(20, 14)
     };
 
-    int getCol() {
-        return this.col;
-    }
-
-    private void setCol(final int col) {
-        this.col = col;
-    }
-
-    int getRow() {
-        return this.row;
-    }
-
-    private void setRow(final int row) {
-        this.row = row;
-    }
-
-    private enum Mode {
-        CAGE,
-        NORMAL,
-        VULNERABLE,
-        DIED
-    }
-
     Ghost(final PacmanGame game,
           final Pacman pacman,
           final int type) {
@@ -74,9 +51,27 @@ public class Ghost extends PacManEntity {
         setMode(Mode.CAGE);
     }
 
-    private void setMode(final Mode mode) {
-        this.mode = mode;
-        modeChanged();
+    int getCol() {
+        return this.col;
+    }
+
+    int getRow() {
+        return this.row;
+    }
+
+    private void setCol(final int col) {
+        this.col = col;
+    }
+
+    private void setRow(final int row) {
+        this.row = row;
+    }
+
+    private enum Mode {
+        CAGE,
+        NORMAL,
+        VULNERABLE,
+        DIED
     }
 
     private int getTargetX(int col) {
@@ -85,6 +80,11 @@ public class Ghost extends PacManEntity {
 
     private int getTargetY(int row) {
         return (row + 3) * 8 - 2;
+    }
+
+    private void setMode(final Mode mode) {
+        this.mode = mode;
+        modeChanged();
     }
 
     void updatePosition() {
@@ -311,12 +311,12 @@ public class Ghost extends PacManEntity {
         }
     }
 
-    private final GhostCatchedAction ghostCatchedAction = new GhostCatchedAction();
+    private final GhostCaughtAction ghostCatchedAction = new GhostCaughtAction();
 
-    private class GhostCatchedAction implements Runnable {
+    private class GhostCaughtAction implements Runnable {
         @Override
         public void run() {
-            Ghost.this.getGame().ghostCatched(Ghost.this);
+            Ghost.this.getGame().ghostCaught(Ghost.this);
         }
     }
 
@@ -324,7 +324,6 @@ public class Ghost extends PacManEntity {
         if (this.markAsVulnerable) {
             this.markAsVulnerable = false;
         }
-
         updateGhostMovement(true, this.pacman.getCol(), this.pacman.getRow(), this.ghostCatchedAction, 2, 3, 0, 1); // run away movement
         // return to normal mode after 8 seconds
         if (!checkVulnerableModeTime()) {
@@ -440,7 +439,6 @@ public class Ghost extends PacManEntity {
                     if (!moveToGridPosition(this.getCol(), this.getRow(), 1)) {
                         this.lastDirection = this.direction;
                         this.setInstructionPointer(0);
-                        // adjustHorizontalOutsideMovement();
                     }
                     if (collisionWithPacmanAction != null && checkCollisionWithPacman()) {
                         collisionWithPacmanAction.run();
@@ -451,8 +449,6 @@ public class Ghost extends PacManEntity {
     }
 
     private boolean checkCollisionWithPacman() {
-        this.pacman.updateBoundingBox();
-        updateBoundingBox();
         return this.pacman.getBoundingBox().intersects(this.getBoundingBox());
     }
 
