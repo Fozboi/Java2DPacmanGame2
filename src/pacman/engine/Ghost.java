@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class Ghost extends PacManEntity {
 
@@ -14,7 +15,7 @@ public class Ghost extends PacManEntity {
     private int col;
     private int row;
     private int cageUpDownCount;
-    private Mode mode = Mode.CAGE;
+    private Mode mode;
     private int direction = 0;
     private int lastDirection;
     private final List<Integer> desiredDirections = new ArrayList<>();
@@ -289,34 +290,21 @@ public class Ghost extends PacManEntity {
         }
     }
 
-    private final PacmanCatchedAction pacmanCatchedAction = new PacmanCatchedAction();
-
-    private class PacmanCatchedAction implements Runnable {
-        @Override
-        public void run() {
-            Ghost.this.getGame().setState(State.PACMAN_DIED);
-        }
-    }
-
     private void updateGhostNormal() {
         if (checkVulnerableModeTime() && this.markAsVulnerable) {
             setMode(Mode.VULNERABLE);
             this.markAsVulnerable = false;
         }
 
+        final Function<PacmanGame, Void> function = pacmanGame -> {
+            pacmanGame.setState(State.PACMAN_DIED);
+            return null;
+        };
+
         if (this.type == 0 || this.type == 1) {
-            updateGhostMovement(true, this.pacman.getCol(), this.pacman.getRow(), this.pacmanCatchedAction, 0, 1, 2, 3); // chase movement
+            updateGhostMovement(true, this.pacman.getCol(), this.pacman.getRow(), function, 0, 1, 2, 3); // chase movement
         } else {
-            updateGhostMovement(false, 0, 0, this.pacmanCatchedAction, 0, 1, 2, 3); // random movement
-        }
-    }
-
-    private final GhostCaughtAction ghostCatchedAction = new GhostCaughtAction();
-
-    private class GhostCaughtAction implements Runnable {
-        @Override
-        public void run() {
-            Ghost.this.getGame().ghostCaught(Ghost.this);
+            updateGhostMovement(false, 0, 0, function, 0, 1, 2, 3); // random movement
         }
     }
 
@@ -324,7 +312,13 @@ public class Ghost extends PacManEntity {
         if (this.markAsVulnerable) {
             this.markAsVulnerable = false;
         }
-        updateGhostMovement(true, this.pacman.getCol(), this.pacman.getRow(), this.ghostCatchedAction, 2, 3, 0, 1); // run away movement
+
+        final Function<PacmanGame, Void> function = pacmanGame -> {
+            pacmanGame.ghostCaught(Ghost.this);
+            return null;
+        };
+
+        updateGhostMovement(true, this.pacman.getCol(), this.pacman.getRow(), function, 2, 3, 0, 1); // run away movement
         // return to normal mode after 8 seconds
         if (!checkVulnerableModeTime()) {
             setMode(Mode.NORMAL);
@@ -384,7 +378,7 @@ public class Ghost extends PacManEntity {
     private void updateGhostMovement(final boolean useTarget,
                                      final int targetCol,
                                      final int targetRow,
-                                     final Runnable collisionWithPacmanAction,
+                                     final Function<PacmanGame, Void> function,
                                      final int... desiredDirectionsMap) {
 
         this.desiredDirections.clear();
@@ -440,8 +434,8 @@ public class Ghost extends PacManEntity {
                         this.lastDirection = this.direction;
                         this.setInstructionPointer(0);
                     }
-                    if (collisionWithPacmanAction != null && checkCollisionWithPacman()) {
-                        collisionWithPacmanAction.run();
+                    if (checkCollisionWithPacman()) {
+                        function.apply(this.getGame());
                     }
                     break yield;
             }

@@ -217,7 +217,7 @@ public class PacmanGame {
         }
     }
 
-    void ghostCaught(final Ghost ghost) {
+    public void ghostCaught(final Ghost ghost) {
         this.setCaughtGhost(ghost);
         setState(State.GHOST_CAPTURED);
     }

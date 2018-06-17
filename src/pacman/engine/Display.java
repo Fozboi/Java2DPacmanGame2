@@ -39,11 +39,11 @@ class Display extends Canvas {
         }
     }
 
-    public BufferStrategy getDisplayBuffer() {
+    private BufferStrategy getDisplayBuffer() {
         return this.bs;
     }
 
-    public void setDisplayBuffer(BufferStrategy bs) {
+    private void setDisplayBuffer(BufferStrategy bs) {
         this.bs = bs;
     }
 
