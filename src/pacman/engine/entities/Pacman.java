@@ -28,7 +28,7 @@ public class Pacman extends PacManEntity {
         }
         loadFrames(pacmanFrameNames);
         placePacmanAtStartPosition();
-        this.setBoundingBox(new Rectangle(0, 0, 6, 6));
+        this.setBoundingBox(new Rectangle(this.getX(), this.getY(), 6, 6));
     }
 
     int getDirection() {

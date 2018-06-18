@@ -49,7 +49,7 @@ public class Ghost extends PacManEntity {
             ghostFrameNames[12 + i] = "/resources/ghost_died_" + i + ".png";
         }
         loadFrames(ghostFrameNames);
-        this.setBoundingBox(new Rectangle(0, 0, 6, 6));
+        this.setBoundingBox(new Rectangle(this.getX(), this.getY(), 6, 6));
         setMode(Mode.CAGE);
     }
 
