@@ -1,4 +1,6 @@
-package pacman.engine;
+package pacman.engine.entities;
+
+import pacman.engine.PacmanGame;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -8,11 +10,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-abstract class PacManEntity {
+public abstract class PacManEntity {
 
     private final PacmanGame game;
-    private double x;
-    private double y;
+    private int x;
+    private int y;
     private boolean visible;
     private BufferedImage frame;
     private BufferedImage[] frames;
@@ -24,13 +26,14 @@ abstract class PacManEntity {
 
     PacManEntity(final PacmanGame game) {
         this.game = game;
+        this.instructionPointer = 0;
     }
 
-    double getX() {
+    int getX() {
         return this.x;
     }
 
-    double getY() {
+    int getY() {
         return this.y;
     }
 
@@ -46,7 +49,7 @@ abstract class PacManEntity {
         return this.instructionPointer;
     }
 
-    Rectangle getBoundingBox() {
+    public Rectangle getBoundingBox() {
         return this.boundingBox;
     }
 
@@ -57,10 +60,9 @@ abstract class PacManEntity {
     public void draw(final Graphics2D g) {
         if (this.isVisible()) {
             if (this.getFrame() != null) {
-                g.drawImage(this.getFrame(), (int) this.getX(), (int) this.getY(), this.getFrame().getWidth(), this.getFrame().getHeight(), null);
+                g.drawImage(this.getFrame(), this.getX(), this.getY(), this.getFrame().getWidth(), this.getFrame().getHeight(), null);
             }
             if (DRAW_BOUNDING_BOX && this.getBoundingBox() != null) {
-                updateBoundingBox();
                 g.setColor(Color.RED);
                 g.draw(this.getBoundingBox());
             }
@@ -80,17 +82,11 @@ abstract class PacManEntity {
         }
     }
 
-    public void updateBoundingBox() {
-        if (this.getBoundingBox() != null) {
-            this.getBoundingBox().setLocation((int) this.getX(), (int) this.getY());
-        }
-    }
-
     PacmanGame getGame() {
         return this.game;
     }
 
-    boolean isVisible() {
+    public boolean isVisible() {
         return this.visible;
     }
 
@@ -104,11 +100,11 @@ abstract class PacManEntity {
     public void hideAll() {
     }
 
-    void setX(final double x) {
+    void setX(final int x) {
         this.x = x;
     }
 
-    void setY(final double y) {
+    void setY(final int y) {
         this.y = y;
     }
 

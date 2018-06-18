@@ -1,6 +1,7 @@
-package pacman.engine;
+package pacman.engine.entities;
 
 
+import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
 
 import java.awt.*;
@@ -10,7 +11,7 @@ public class PresentBanner extends PacManEntity {
     private final String text = "Presenting ...";
     private int textIndex;
 
-    PresentBanner(final PacmanGame game) {
+    public PresentBanner(final PacmanGame game) {
         super(game);
     }
 

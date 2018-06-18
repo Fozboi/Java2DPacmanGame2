@@ -1,15 +1,14 @@
-package pacman.engine;
+package pacman.engine.entities;
 
+import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
 import java.awt.Rectangle;
 
 public class PowerPellet extends Pellet {
 
-    private boolean eaten;
-
-    PowerPellet(final PacmanGame game,
-                final int col,
-                final int row) {
+    public PowerPellet(final PacmanGame game,
+                       final int col,
+                       final int row) {
         super(game);
         loadFrames("/resources/powerBall.png");
         this.setX(col * 8 + 1 - 32);
@@ -20,7 +19,8 @@ public class PowerPellet extends Pellet {
 
     @Override
     public void update() {
-        this.setVisible(!this.eaten && (int) (System.nanoTime() * 0.0000000075) % 2 == 0);
+        this.setInstructionPointer((this.getInstructionPointer() + 1) % 50);
+        this.setVisible(!this.eaten &&  this.getInstructionPointer() > 25);
         if (this.eaten || this.getGame().getState() == State.PACMAN_DIED) {
             return;
         }

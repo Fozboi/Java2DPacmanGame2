@@ -1,16 +1,17 @@
-package pacman.engine;
+package pacman.engine.entities;
 
-
+import pacman.engine.KeyBoard;
+import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class Title extends PacManEntity {
 
     private boolean pushSpaceToStart;
 
-    Title(final PacmanGame game) {
+    public Title(final PacmanGame game) {
         super(game);
         loadFrames("/resources/title.png");
         this.setX(21);
@@ -30,8 +31,8 @@ public class Title extends PacManEntity {
                         }
                         this.setInstructionPointer(2);
                     case 2:
-                        double dy = 100 - this.getY();
-                        this.setY(this.getY() + dy * 0.1);
+                        int dy = 100 - this.getY();
+                        this.setY(this.getY() + dy);
                         if (Math.abs(dy) < 1) {
                             this.setStartTime(System.currentTimeMillis());
                             this.setInstructionPointer(3);

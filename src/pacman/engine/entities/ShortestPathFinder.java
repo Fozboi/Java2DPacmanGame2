@@ -1,4 +1,4 @@
-package pacman.engine;
+package pacman.engine.entities;
 
 import java.awt.Point;
 import java.util.ArrayList;

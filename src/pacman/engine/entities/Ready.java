@@ -1,10 +1,11 @@
-package pacman.engine;
+package pacman.engine.entities;
 
+import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
 
 public class Ready extends PacManEntity {
 
-    Ready(final PacmanGame game) {
+    public Ready(final PacmanGame game) {
         super(game);
         this.setX(11 * 8);
         this.setY(20 * 8);

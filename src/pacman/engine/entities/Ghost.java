@@ -1,9 +1,10 @@
-package pacman.engine;
+package pacman.engine.entities;
 
+import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
 
 import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -30,9 +31,9 @@ public class Ghost extends PacManEntity {
             new Point(18, 14), new Point(20, 14)
     };
 
-    Ghost(final PacmanGame game,
-          final Pacman pacman,
-          final int type) {
+    public Ghost(final PacmanGame game,
+                 final Pacman pacman,
+                 final int type) {
         super(game);
         this.pacman = pacman;
         this.type = type;
@@ -100,8 +101,8 @@ public class Ghost extends PacManEntity {
     }
 
     private boolean moveToTargetPosition(int targetX, int targetY, int velocity) {
-        final int sx = (int) (targetX - this.getX());
-        final int sy = (int) (targetY - this.getY());
+        final int sx = targetX - this.getX();
+        final int sy = targetY - this.getY();
         final int vx = Math.abs(sx) < velocity ? Math.abs(sx) : velocity;
         final int vy = Math.abs(sy) < velocity ? Math.abs(sy) : velocity;
         final int idx = vx * (Integer.compare(sx, 0));
@@ -190,6 +191,7 @@ public class Ghost extends PacManEntity {
             }
             updateAnimation();
         }
+        this.getBoundingBox().setLocation(this.getX() + 4, this.getY() + 4);
     }
 
     private void updateAnimation() {
@@ -233,12 +235,12 @@ public class Ghost extends PacManEntity {
                     }
                     this.setInstructionPointer(1);
                 case 1:
-                    if (moveToTargetPosition((int) this.getX(), 134 + 4, 1)) {
+                    if (moveToTargetPosition(this.getX(), 134 + 4, 1)) {
                         break yield;
                     }
                     this.setInstructionPointer(2);
                 case 2:
-                    if (moveToTargetPosition((int) this.getX(), 134 - 4, 1)) {
+                    if (moveToTargetPosition(this.getX(), 134 - 4, 1)) {
                         break yield;
                     }
                     this.cageUpDownCount++;
@@ -248,7 +250,7 @@ public class Ghost extends PacManEntity {
                     }
                     this.setInstructionPointer(3);
                 case 3:
-                    if (moveToTargetPosition((int) this.getX(), 134, 1)) {
+                    if (moveToTargetPosition(this.getX(), 134, 1)) {
                         break yield;
                     }
                     this.setInstructionPointer(4);
@@ -446,11 +448,6 @@ public class Ghost extends PacManEntity {
         return this.pacman.getBoundingBox().intersects(this.getBoundingBox());
     }
 
-    @Override
-    public void updateBoundingBox() {
-        this.getBoundingBox().setLocation((int) (this.getX() + 4), (int) (this.getY() + 4));
-    }
-
     private void modeChanged() {
         this.setInstructionPointer(0);
     }
@@ -485,7 +482,7 @@ public class Ghost extends PacManEntity {
         this.setVisible(false);
     }
 
-    void startGhostVulnerableMode() {
+    public void startGhostVulnerableMode() {
         this.vulnerableModeStartTime = System.currentTimeMillis();
         this.markAsVulnerable = true;
     }

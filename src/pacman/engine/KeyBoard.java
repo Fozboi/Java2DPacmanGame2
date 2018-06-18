@@ -4,7 +4,7 @@ package pacman.engine;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-class KeyBoard extends KeyAdapter {
+public class KeyBoard extends KeyAdapter {
 
     private final boolean[] keyPressed;
 
@@ -14,11 +14,11 @@ class KeyBoard extends KeyAdapter {
         this.keyPressed = new boolean[256];
     }
 
-    static KeyBoard get() {
+    public static KeyBoard get() {
         return INSTANCE;
     }
 
-    boolean[] getKeyPressed() {
+    public boolean[] getKeyPressed() {
         return this.keyPressed;
     }
 

@@ -1,5 +1,7 @@
-package pacman.engine;
+package pacman.engine.entities;
 
+import pacman.engine.KeyBoard;
+import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
 
 import java.awt.Rectangle;
@@ -13,7 +15,7 @@ public class Pacman extends PacManEntity {
     private int direction;
     private long diedTime;
 
-    Pacman(final PacmanGame game) {
+    public Pacman(final PacmanGame game) {
         super(game);
         final String[] pacmanFrameNames = new String[30];
         for (int d = 0; d < 4; d++) {
@@ -55,8 +57,8 @@ public class Pacman extends PacManEntity {
     }
 
     private boolean moveToTargetPosition(final int targetX) {
-        final int sx = (int) (targetX - this.getX());
-        final int sy = (int) (200 - this.getY());
+        final int sx = targetX - this.getX();
+        final int sy = 200 - this.getY();
         final int vx = Math.abs(sx) < 1 ? Math.abs(sx) : 1;
         final int vy = Math.abs(sy) < 1 ? Math.abs(sy) : 1;
         final int idx = vx * (Integer.compare(sx, 0));
@@ -134,8 +136,8 @@ public class Pacman extends PacManEntity {
                 case 1:
                     int targetX = this.getCol() * 8 - 4 - 32;
                     int targetY = (this.getRow() + 3) * 8 - 4;
-                    int difX = (targetX - (int) this.getX());
-                    int difY = (targetY - (int) this.getY());
+                    int difX = (targetX - this.getX());
+                    int difY = (targetY - this.getY());
                     this.setX(this.getX() + Integer.compare(difX, 0));
                     this.setY(this.getY() + Integer.compare(difY, 0));
                     if (difX == 0 && difY == 0) {
@@ -183,16 +185,12 @@ public class Pacman extends PacManEntity {
                     break;
             }
         }
+        this.getBoundingBox().setLocation(this.getX() + 4, this.getY() + 4);
     }
 
     private void updateAnimation() {
         final int frameIndex = 4 * this.getDirection() + (int) (System.nanoTime() * 0.00000002) % 4;
         this.setFrame(this.getFrames()[frameIndex]);
-    }
-
-    @Override
-    public void updateBoundingBox() {
-        this.getBoundingBox().setLocation((int) (this.getX() + 4), (int) (this.getY() + 4));
     }
 
     @Override

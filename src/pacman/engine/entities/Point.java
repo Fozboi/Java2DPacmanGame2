@@ -1,12 +1,13 @@
-package pacman.engine;
+package pacman.engine.entities;
 
+import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
 
 import java.awt.Rectangle;
 
 public class Point extends PacManEntity {
 
-    Point(final PacmanGame game) {
+    public Point(final PacmanGame game) {
         super(game);
         loadFrames("/resources/point_0.png",
                 "/resources/point_1.png"

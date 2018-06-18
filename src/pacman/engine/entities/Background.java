@@ -1,16 +1,13 @@
-package pacman.engine;
+package pacman.engine.entities;
 
+import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
-import java.awt.Color;
-import java.awt.Graphics2D;
 
-class Background extends PacManEntity {
+public class Background extends PacManEntity {
 
-    private final boolean showBlockedCellColor = true;
-    private final Color blockedCellColor = new Color(255, 0, 0, 128);
     private int frameCount;
 
-    Background(final PacmanGame game) {
+    public Background(final PacmanGame game) {
         super(game);
         loadFrames("/resources/background_0.png", "/resources/background_1.png");
     }
@@ -63,21 +60,6 @@ class Background extends PacManEntity {
                         this.getGame().nextLevel();
                         break;
                 }
-        }
-    }
-
-    @Override
-    public void draw(final Graphics2D g) {
-        super.draw(g);
-        if (this.showBlockedCellColor) {
-            g.setColor(this.blockedCellColor);
-            for (int row = 0; row < 31; row++) {
-                for (int col = 0; col < 36; col++) {
-                    if (this.getGame().maze[row][col] == 1) {
-                        g.fillRect(col * 8 - 32, (row + 3) * 8, 8, 8);
-                    }
-                }
-            }
         }
     }
 

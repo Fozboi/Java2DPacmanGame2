@@ -1,10 +1,12 @@
-package pacman.engine;
+package pacman.engine.entities;
 
-import java.awt.Graphics2D;
+import pacman.engine.PacmanGame;
+
+import java.awt.*;
 
 public class HUD extends PacManEntity {
 
-    HUD(final PacmanGame game) {
+    public HUD(final PacmanGame game) {
         super(game);
         loadFrames("/resources/pacman_life.png");
     }

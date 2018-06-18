@@ -1,12 +1,13 @@
-package pacman.engine;
+package pacman.engine.entities;
 
+import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
 
 import java.awt.*;
 
-class InitializationBanner extends PacManEntity {
+public class InitializationBanner extends PacManEntity {
 
-    InitializationBanner(final PacmanGame game) {
+    public InitializationBanner(final PacmanGame game) {
         super(game);
     }
 
