@@ -262,9 +262,7 @@ public class PacmanGame {
     }
 
     public boolean consumePellet(final Pellet pellet) {
-        return pellet.getBoundingBox() != null && this.pacman.getBoundingBox() != null
-                && pellet.isVisible() && this.pacman.isVisible()
-                && pellet.getBoundingBox().intersects(this.pacman.getBoundingBox());
+        return pellet.isVisible() && this.pacman.isVisible() && pellet.getBoundingBox().intersects(this.pacman.getBoundingBox());
     }
 
     public void showAll() {
