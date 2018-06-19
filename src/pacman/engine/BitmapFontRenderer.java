@@ -39,7 +39,7 @@ class BitmapFontRenderer {
             else if (c == (int) '\r') {
                 continue;
             }
-            Image letter = this.letters[c];
+            final Image letter = this.letters[c];
             g.drawImage(letter, px + x, py + y + 1, null);
             px += this.letterWidth + LETTER_HORIZONTAL_SPACING;
         }
@@ -65,13 +65,12 @@ class BitmapFontRenderer {
         this.letterWidth = this.bitmapFontImage.getWidth() / cols;
         this.letterHeight = this.bitmapFontImage.getHeight() / rows;
 
-        for (int y=0; y<rows; y++) {
-            for (int x=0; x<cols; x++) {
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x <cols; x++) {
                 this.letters[y * cols + x] = new BufferedImage(this.letterWidth, this.letterHeight, BufferedImage.TYPE_INT_ARGB);
                 final Graphics2D graphics2D = (Graphics2D) this.letters[y * cols + x].getGraphics();
-                graphics2D.drawImage(this.bitmapFontImage, 0, 0, this.letterWidth, this.letterHeight
-                        , x * this.letterWidth, y * this.letterHeight
-                        , x * this.letterWidth + this.letterWidth, y * this.letterHeight + this.letterHeight, null);
+                graphics2D.drawImage(this.bitmapFontImage, 0, 0, this.letterWidth, this.letterHeight, x * this.letterWidth,
+                                 y * this.letterHeight, x * this.letterWidth + this.letterWidth, y * this.letterHeight + this.letterHeight, null);
             }
         }
     }

@@ -3,18 +3,17 @@ package pacman.engine.entities;
 import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
 
-public class Ready extends PacManEntity {
+import java.awt.*;
 
-    public Ready(final PacmanGame game) {
+public class IntroductionBanner extends PacManEntity {
+
+    public IntroductionBanner(final PacmanGame game) {
         super(game);
-        setX(11 * 8);
-        setY(20 * 8);
-        loadFrames("/resources/ready.png");
     }
 
     @Override
     public void update() {
-        if (getGame().getState() == State.READY) {
+        if (getGame().getState() == State.INITIALIZING) {
             setVisible(true);
             switch (getEntityCounter()) {
                 case 0:
@@ -22,22 +21,22 @@ public class Ready extends PacManEntity {
                     incrementEntityCounter();
                     break;
                 case 1:
-                    if (getElapsedTime() > 2000) {
+                    if (getElapsedTime() > 3000) {
                         incrementEntityCounter();
                     }
                     break;
                 case 2:
-                    getGame().showAll();
-                    startTimer();
-                    incrementEntityCounter();
-                case 3:
-                    if (getElapsedTime() > 2000) {
-                        setVisible(false);
-                        resetEntityCounter();
-                        getGame().setState(State.PLAYING);
-                    }
+                    getGame().setState(State.TITLE);
+                    setVisible(false);
                     break;
             }
+        }
+    }
+
+    @Override
+    public void draw(final Graphics2D g) {
+        if (isVisible()) {
+            getGame().drawText(g, "Presenting", 60, 130);
         }
     }
 

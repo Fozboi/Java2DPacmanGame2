@@ -28,7 +28,142 @@ public class Pacman extends PacManEntity {
         }
         loadFrames(pacmanFrameNames);
         placePacmanAtStartPosition();
-        this.setBoundingBox(new Rectangle(this.getX(), this.getY(), 6, 6));
+        setBoundingBox(new Rectangle(getX(), getY(), 6, 6));
+    }
+
+    @Override
+    public void update() {
+        if (getGame().getState() == State.TITLE) {
+            switch (getEntityCounter()) {
+                case 0:
+                    startTimer();
+                    incrementEntityCounter();
+                    break;
+                case 1:
+                    if (getElapsedTime() > 3000) {
+                        incrementEntityCounter();
+                    }
+                    break;
+                case 2:
+                    setDirection(0);
+                    if (!moveToTargetPosition(250)) {
+                        startTimer();
+                        incrementEntityCounter();
+                    }
+                    break;
+                case 3:
+                    if (getElapsedTime() > 3000) {
+                        incrementEntityCounter();
+                    }
+                    break;
+                case 4:
+                    setDirection(2);
+                    if (!moveToTargetPosition(-100)) {
+                        resetEntityCounter();
+                    }
+                    break;
+            }
+            updateAnimation();
+        } else if (this.getGame().getState() == State.READY) {
+            placePacmanAtStartPosition();
+        } else if (this.getGame().getState() == State.PLAYING) {
+            if (!isVisible()) {
+                return;
+            }
+            if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_LEFT]) {
+                this.desiredDirection = 2;
+            } else if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_RIGHT]) {
+                this.desiredDirection = 0;
+            } else if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_UP]) {
+                this.desiredDirection = 3;
+            } else if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_DOWN]) {
+                this.desiredDirection = 1;
+            }
+
+            switch (getEntityCounter()) {
+                case 0:
+                    double angle = Math.toRadians(this.desiredDirection * 90);
+                    int dx = (int) Math.cos(angle);
+                    int dy = (int) Math.sin(angle);
+                    if (getGame().maze[getRow() + dy][getCol() + dx] == 0) {
+                        setDirection(this.desiredDirection);
+                    }
+                    angle = Math.toRadians(getDirection() * 90);
+                    dx = (int) Math.cos(angle);
+                    dy = (int) Math.sin(angle);
+                    if (getGame().maze[getRow() + dy][getCol() + dx] == -1) {
+                        break;
+                    }
+                    setCol(getCol() + dx);
+                    setRow(getRow() + dy);
+                    setEntityCounter(1);
+                case 1:
+                    final int targetX = getCol() * 8 - 4 - 32;
+                    final int targetY = (getRow() + 3) * 8 - 4;
+                    final int difX = (targetX - getX());
+                    final int difY = (targetY - getY());
+                    setX(getX() + Integer.compare(difX, 0));
+                    setY(getY() + Integer.compare(difY, 0));
+                    if (difX == 0 && difY == 0) {
+                        resetEntityCounter();
+                        if (getCol() == 1) {
+                            setCol(34);
+                            setX(getCol() * 8 - 4 - 24);
+                        } else if (getCol() == 34) {
+                            setCol(1);
+                            setX(getCol() * 8 - 4 - 24);
+                        }
+                    }
+                    break;
+            }
+            updateAnimation();
+            if (getGame().isLevelCleared()) {
+                getGame().levelCleared();
+            }
+        } else if (this.getGame().getState() == State.PACMAN_DIED) {
+            switch (getEntityCounter()) {
+                case 0:
+                    startTimer();
+                    incrementEntityCounter();
+                    break;
+                case 1:
+                    if (getElapsedTime() > 2000) {
+                        this.diedTime = System.currentTimeMillis();
+                        incrementEntityCounter();
+                    }
+                    break;
+                case 2:
+                    final int frameIndex = 16 + (int) ((System.currentTimeMillis() - this.diedTime) * 0.0075);
+                    setFrame(getFrames()[frameIndex]);
+                    if (frameIndex == 29) {
+                        startTimer();
+                        incrementEntityCounter();
+                    }
+                    break;
+                case 3:
+                    if (getElapsedTime() > 1500) {
+                        incrementEntityCounter();
+                    }
+                    break;
+                case 4:
+                    getGame().nextLife();
+                    resetEntityCounter();
+                    break;
+            }
+        } else if (this.getGame().getState() == State.LEVEL_CLEARED) {
+            setFrame(getFrames()[0]);
+        }
+        getBoundingBox().setLocation(getX() + 4, getY() + 4);
+    }
+
+    @Override
+    public void showEntity() {
+        this.setVisible(true);
+    }
+
+    @Override
+    public void hideEntity() {
+        this.setVisible(false);
     }
 
     int getDirection() {
@@ -43,182 +178,34 @@ public class Pacman extends PacManEntity {
         return this.col;
     }
 
-    private void placePacmanAtStartPosition() {
-        this.setCol(18);
-        this.setRow(23);
-        updatePosition();
-        this.setFrame(this.getFrames()[0]);
-        this.setDirection(this.desiredDirection = 0);
+    void updatePosition() {
+        setX(getCol() * 8 - 4 - 32 - 4);
+        setY((getRow() + 3) * 8 - 4);
     }
 
-    void updatePosition() {
-        this.setX(this.getCol() * 8 - 4 - 32 - 4);
-        this.setY((this.getRow() + 3) * 8 - 4);
+    private void placePacmanAtStartPosition() {
+        setCol(18);
+        setRow(23);
+        updatePosition();
+        setFrame(getFrames()[0]);
+        setDirection(this.desiredDirection = 0);
     }
 
     private boolean moveToTargetPosition(final int targetX) {
-        final int sx = targetX - this.getX();
-        final int sy = 200 - this.getY();
+        final int sx = targetX - getX();
+        final int sy = 200 - getY();
         final int vx = Math.abs(sx) < 1 ? Math.abs(sx) : 1;
         final int vy = Math.abs(sy) < 1 ? Math.abs(sy) : 1;
         final int idx = vx * (Integer.compare(sx, 0));
         final int idy = vy * (Integer.compare(sy, 0));
-        this.setX(this.getX() + idx);
-        this.setY(this.getY() + idy);
+        setX(getX() + idx);
+        setY(getY() + idy);
         return sx != 0 || sy != 0;
-    }
-
-    @Override
-    public void update() {
-        if (this.getGame().getState() == State.TITLE) {
-            switch (this.getInstructionPointer()) {
-                case 0:
-                    this.setStartTime(System.currentTimeMillis());
-                    this.setInstructionPointer(1);
-                case 1:
-                    if (System.currentTimeMillis() - this.getStartTime() < 3000) {
-                        break;
-                    }
-                    this.setInstructionPointer(2);
-                case 2:
-                    this.setDirection(0);
-                    if (!moveToTargetPosition(250)) {
-                        this.setStartTime(System.currentTimeMillis());
-                        this.setInstructionPointer(3);
-                    }
-                    break;
-                case 3:
-                    if (System.currentTimeMillis() - this.getStartTime() < 3000) {
-                        break;
-                    }
-                    this.setInstructionPointer(4);
-                case 4:
-                    this.setDirection(2);
-                    if (!moveToTargetPosition(-100)) {
-                        this.setInstructionPointer(0);
-                    }
-                    break;
-            }
-            updateAnimation();
-        } else if (this.getGame().getState() == State.PLAYING) {
-            if (!this.isVisible()) {
-                return;
-            }
-            if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_LEFT]) {
-                this.desiredDirection = 2;
-            } else if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_RIGHT]) {
-                this.desiredDirection = 0;
-            } else if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_UP]) {
-                this.desiredDirection = 3;
-            } else if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_DOWN]) {
-                this.desiredDirection = 1;
-            }
-
-            switch (this.getInstructionPointer()) {
-                case 0:
-                    double angle = Math.toRadians(this.desiredDirection * 90);
-                    int dx = (int) Math.cos(angle);
-                    int dy = (int) Math.sin(angle);
-                    if (this.getGame().maze[this.getRow() + dy][this.getCol() + dx] == 0) {
-                        this.setDirection(this.desiredDirection);
-                    }
-
-                    angle = Math.toRadians(this.getDirection() * 90);
-                    dx = (int) Math.cos(angle);
-                    dy = (int) Math.sin(angle);
-                    if (this.getGame().maze[this.getRow() + dy][this.getCol() + dx] == -1) {
-                        break;
-                    }
-
-                    this.setCol(this.getCol() + dx);
-                    this.setRow(this.getRow() + dy);
-                    this.setInstructionPointer(1);
-                case 1:
-                    int targetX = this.getCol() * 8 - 4 - 32;
-                    int targetY = (this.getRow() + 3) * 8 - 4;
-                    int difX = (targetX - this.getX());
-                    int difY = (targetY - this.getY());
-                    this.setX(this.getX() + Integer.compare(difX, 0));
-                    this.setY(this.getY() + Integer.compare(difY, 0));
-                    if (difX == 0 && difY == 0) {
-                        this.setInstructionPointer(0);
-                        if (this.getCol() == 1) {
-                            this.setCol(34);
-                            this.setX(this.getCol() * 8 - 4 - 24);
-                        } else if (this.getCol() == 34) {
-                            this.setCol(1);
-                            this.setX(this.getCol() * 8 - 4 - 24);
-                        }
-                    }
-                    break;
-            }
-            updateAnimation();
-            if (this.getGame().isLevelCleared()) {
-                this.getGame().levelCleared();
-            }
-        } else if (this.getGame().getState() == State.PACMAN_DIED) {
-            switch (this.getInstructionPointer()) {
-                case 0:
-                    this.setStartTime(System.currentTimeMillis());
-                    this.setInstructionPointer(1);
-                case 1:
-                    if (System.currentTimeMillis() - this.getStartTime() < 2000) {
-                        break;
-                    }
-                    this.diedTime = System.currentTimeMillis();
-                    this.setInstructionPointer(2);
-                case 2:
-                    final int frameIndex = 16 + (int) ((System.currentTimeMillis() - this.diedTime) * 0.0075);
-                    this.setFrame(this.getFrames()[frameIndex]);
-                    if (frameIndex == 29) {
-                        this.setStartTime(System.currentTimeMillis());
-                        this.setInstructionPointer(3);
-                    }
-                    break;
-                case 3:
-                    if (System.currentTimeMillis() - this.getStartTime() < 1500) {
-                        break;
-                    }
-                    this.setInstructionPointer(4);
-                case 4:
-                    this.getGame().nextLife();
-                    break;
-            }
-        }
-        this.getBoundingBox().setLocation(this.getX() + 4, this.getY() + 4);
     }
 
     private void updateAnimation() {
         final int frameIndex = 4 * this.getDirection() + (int) (System.nanoTime() * 0.00000002) % 4;
         this.setFrame(this.getFrames()[frameIndex]);
-    }
-
-    @Override
-    public void stateChanged() {
-        if (this.getGame().getState() == PacmanGame.State.TITLE) {
-            this.setX(-100);
-            this.setY(200);
-            this.setInstructionPointer(0);
-            this.setVisible(true);
-        } else if (this.getGame().getState() == State.READY) {
-            this.setVisible(false);
-        } else if (this.getGame().getState() == State.READY2) {
-            placePacmanAtStartPosition();
-        } else if (this.getGame().getState() == State.PLAYING) {
-            this.setInstructionPointer(0);
-        } else if (this.getGame().getState() == State.PACMAN_DIED) {
-            this.setInstructionPointer(0);
-        } else if (this.getGame().getState() == State.LEVEL_CLEARED) {
-            this.setFrame(this.getFrames()[0]);
-        }
-    }
-
-    public void showAll() {
-        this.setVisible(true);
-    }
-
-    public void hideAll() {
-        this.setVisible(false);
     }
 
     private void setDirection(int direction) {

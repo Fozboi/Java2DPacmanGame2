@@ -11,46 +11,36 @@ public class PowerPellet extends Pellet {
                        final int row) {
         super(game);
         loadFrames("/resources/powerBall.png");
-        this.setX(col * 8 + 1 - 32);
-        this.setY((row + 3) * 8 + 1);
-        this.setBoundingBox(new Rectangle(0, 0, 4, 4));
-        this.eaten = true;
+        setX(col * 8 + 1 - 32);
+        setY((row + 3) * 8 + 1);
+        setBoundingBox(new Rectangle(this.getX() + 2, this.getY() + 2, 4, 4));
+        this.eaten = false;
     }
 
     @Override
     public void update() {
-        this.setInstructionPointer((this.getInstructionPointer() + 1) % 50);
-        this.setVisible(!this.eaten &&  this.getInstructionPointer() > 25);
-        if (this.eaten || this.getGame().getState() == State.PACMAN_DIED) {
-            return;
-        }
-        if (this.getGame().consumePellet(this)) {
-            this.eaten = true;
-            this.setVisible(false);
-            this.getGame().addScore(50);
-            this.getGame().startGhostVulnerableMode();
+        setVisible((getGame().getState() == State.READY ||
+                    getGame().getState() == State.PLAYING) &&
+                    !this.eaten);
+        if (!(this.eaten || getGame().getState() == State.PACMAN_DIED)) {
+            if (getGame().pacmanEatsPellet(this)) {
+                this.eaten = true;
+                getGame().incrementFoodCount();
+                setVisible(false);
+                getGame().addScore(50);
+                getGame().startGhostVulnerableMode();
+            }
         }
     }
 
     @Override
-    public void stateChanged() {
-        if (this.getGame().getState() == PacmanGame.State.TITLE
-                || this.getGame().getState() == State.LEVEL_CLEARED
-                || this.getGame().getState() == State.GAME_OVER) {
-            this.eaten = true;
-        }
-        else if (this.getGame().getState() == PacmanGame.State.READY) {
-            this.eaten = false;
-            this.setVisible(true);
-        }
+    public void hideEntity() {
+        setVisible(false);
     }
 
-    public void hideAll() {
-        this.setVisible(false);
-    }
-
-    public void showAll() {
-        this.setVisible(true);
+    @Override
+    public void showEntity() {
+        setVisible(true);
     }
 
 }

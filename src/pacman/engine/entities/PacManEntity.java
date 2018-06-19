@@ -19,14 +19,32 @@ public abstract class PacManEntity {
     private BufferedImage frame;
     private BufferedImage[] frames;
     private Rectangle boundingBox;
-    private int instructionPointer;
+    private int entityCounter;
     private long startTime;
 
     private static final boolean DRAW_BOUNDING_BOX = true;
 
     PacManEntity(final PacmanGame game) {
         this.game = game;
-        this.instructionPointer = 0;
+        this.entityCounter = 0;
+    }
+
+    public abstract void update();
+
+    public void draw(final Graphics2D g) {
+        if (isVisible()) {
+            if (getFrame() != null) {
+                g.drawImage(getFrame(), getX(), getY(), getFrame().getWidth(), getFrame().getHeight(), null);
+            }
+            if (DRAW_BOUNDING_BOX && this.getBoundingBox() != null) {
+                g.setColor(Color.RED);
+                g.draw(this.getBoundingBox());
+            }
+        }
+    }
+
+    public Rectangle getBoundingBox() {
+        return this.boundingBox;
     }
 
     int getX() {
@@ -45,28 +63,8 @@ public abstract class PacManEntity {
         return this.frames;
     }
 
-    int getInstructionPointer() {
-        return this.instructionPointer;
-    }
-
-    public Rectangle getBoundingBox() {
-        return this.boundingBox;
-    }
-
-    public abstract void update();
-
-    public abstract void stateChanged();
-
-    public void draw(final Graphics2D g) {
-        if (this.isVisible()) {
-            if (this.getFrame() != null) {
-                g.drawImage(this.getFrame(), this.getX(), this.getY(), this.getFrame().getWidth(), this.getFrame().getHeight(), null);
-            }
-            if (DRAW_BOUNDING_BOX && this.getBoundingBox() != null) {
-                g.setColor(Color.RED);
-                g.draw(this.getBoundingBox());
-            }
-        }
+    int getEntityCounter() {
+        return this.entityCounter;
     }
 
     void loadFrames(final String... framesRes) {
@@ -94,10 +92,10 @@ public abstract class PacManEntity {
         this.visible = visible;
     }
 
-    public void showAll() {
+    public void showEntity() {
     }
 
-    public void hideAll() {
+    public void hideEntity() {
     }
 
     void setX(final int x) {
@@ -120,8 +118,16 @@ public abstract class PacManEntity {
         this.boundingBox = boundingBox;
     }
 
-    void setInstructionPointer(final int instructionPointer) {
-        this.instructionPointer = instructionPointer;
+    void setEntityCounter(final int entityCounter) {
+        this.entityCounter = entityCounter;
+    }
+
+    void resetEntityCounter() {
+        this.entityCounter = 0;
+    }
+
+    void incrementEntityCounter() {
+        this.entityCounter++;
     }
 
     long getStartTime() {
@@ -130,5 +136,13 @@ public abstract class PacManEntity {
 
     void setStartTime(final long startTime) {
         this.startTime = startTime;
+    }
+
+    void startTimer() {
+        this.startTime = System.currentTimeMillis();
+    }
+
+    long getElapsedTime() {
+        return System.currentTimeMillis() - startTime;
     }
 }

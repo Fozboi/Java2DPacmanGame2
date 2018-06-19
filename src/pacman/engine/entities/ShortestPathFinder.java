@@ -26,7 +26,8 @@ class ShortestPathFinder {
         }
     }
 
-    private int getMapScore(int x, int y) {
+    private int getMapScore(final int x,
+                            final int y) {
         if (x < 0 || x > this.map[0].length - 1 || y < 0 || y > this.map.length - 1) {
             return -1;
         }
@@ -35,7 +36,10 @@ class ShortestPathFinder {
 
     private final int[] neighbors = {1, 0, -1, 0, 0, 1, 0, -1};
 
-    void find(int srcX, int srcY, int destX, int destY) {
+    void find(final int srcX,
+              final int srcY,
+              final int destX,
+              final int destY) {
         this.path.clear();
         clearMap();
         int score = 1;

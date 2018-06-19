@@ -13,31 +13,26 @@ public class HUD extends PacManEntity {
 
     @Override
     public void update() {
+        setVisible(getGame().getState() != PacmanGame.State.INITIALIZING);
     }
 
     @Override
     public void draw(final Graphics2D g) {
-        if (!this.isVisible()) {
-            return;
-        }
-        this.getGame().drawText(g, "SCORE", 10, 1);
-        this.getGame().drawText(g, this.getGame().getScore(), 10, 10);
-        this.getGame().drawText(g, "HIGH SCORE ", 78, 1);
-        this.getGame().drawText(g, this.getGame().getHighScore(), 90, 10);
-        this.getGame().drawText(g, "LIVES: ", 10, 274);
-        for (int lives = 0; lives < this.getGame().getLives(); lives++) {
-            g.drawImage(this.getFrame(), 60 + 20 * lives, 272, null);
+        if (isVisible()) {
+            getGame().drawText(g, "SCORE", 10, 1);
+            getGame().drawText(g, getGame().getScore(), 10, 10);
+            getGame().drawText(g, "HIGH SCORE ", 78, 1);
+            getGame().drawText(g, getGame().getHighScore(), 90, 10);
+            getGame().drawText(g, "LIVES: ", 10, 274);
+            for (int lives = 0; lives < getGame().getLives(); lives++) {
+                g.drawImage(getFrame(), 60 + 20 * lives, 272, null);
+            }
         }
     }
 
     @Override
-    public void stateChanged() {
-        this.setVisible((this.getGame().getState() != PacmanGame.State.INITIALIZING)
-                && (this.getGame().getState() !=PacmanGame.State.OL_PRESENTS));
-    }
-
-    public void showAll() {
-        this.setVisible(true);
+    public void showEntity() {
+        setVisible(true);
     }
 
 }

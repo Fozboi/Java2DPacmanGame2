@@ -14,73 +14,64 @@ public class Background extends PacManEntity {
 
     @Override
     public void update() {
-        if(this.getGame().getState() == State.LEVEL_CLEARED) {
-                switch (this.getInstructionPointer()) {
+
+        if (getGame().getState() == State.TITLE) {
+            setVisible(false);
+        } else if (getGame().getState() == State.READY) {
+            setVisible(true);
+        } else if(getGame().getState() == State.LEVEL_CLEARED) {
+                switch (getEntityCounter()) {
                     case 0:
                         this.frameCount = 0;
-                        this.setStartTime(System.currentTimeMillis());
-                        this.setInstructionPointer(1);
+                        startTimer();
+                        incrementEntityCounter();
                         break;
                     case 1:
-                        if (System.currentTimeMillis() - this.getStartTime() < 1500) {
-                            return;
+                        if (getElapsedTime() > 1500) {
+                            incrementEntityCounter();
                         }
-                        this.setInstructionPointer(2);
                         break;
                     case 2:
-                        this.setFrame(this.getFrames()[1]);
-                        this.setStartTime(System.currentTimeMillis());
-                        this.setInstructionPointer(3);
+                        setFrame(getFrames()[1]);
+                        startTimer();
+                        incrementEntityCounter();
+                        break;
                     case 3:
-                        if (System.currentTimeMillis() - this.getStartTime() < 200) {
-                            return;
+                        if (getElapsedTime() > 200) {
+                            setFrame(getFrames()[0]);
+                            startTimer();
+                            incrementEntityCounter();
                         }
-                        this.setFrame(this.getFrames()[0]);
-                        this.setStartTime(System.currentTimeMillis());
-                        this.setInstructionPointer(4);
                         break;
                     case 4:
-                        if (System.currentTimeMillis() - this.getStartTime() < 200) {
-                            return;
+                        if (getElapsedTime() > 200) {
+                            this.frameCount++;
+                            if (this.frameCount < 5) {
+                                setEntityCounter(2);
+                                return;
+                            }
                         }
-                        this.frameCount++;
-                        if (this.frameCount < 5) {
-                            this.setInstructionPointer(2);
-                            return;
-                        }
-                        this.getGame().hideAll();
-                        this.setStartTime(System.currentTimeMillis());
-                        this.setInstructionPointer(5);
+                        getGame().hideAll();
+                        startTimer();
+                        incrementEntityCounter();
                         break;
                     case 5:
-                        if (System.currentTimeMillis() - this.getStartTime() < 500) {
-                            return;
+                        if (getElapsedTime() > 500) {
+                            setVisible(true);
+                            getGame().nextLevel();
                         }
-                        this.setVisible(true);
-                        this.getGame().nextLevel();
                         break;
                 }
         }
     }
 
     @Override
-    public void stateChanged() {
-        if (this.getGame().getState() == State.TITLE) {
-            this.setVisible(false);
-        }
-        else if (this.getGame().getState() == State.READY) {
-            this.setVisible(true);
-        }
-        else if (this.getGame().getState() == State.LEVEL_CLEARED) {
-            this.setInstructionPointer(0);
-        }
-    }
-
-    public void hideAll() {
+    public void hideEntity() {
         this.setVisible(false);
     }
 
-    public void showAll() {
+    @Override
+    public void showEntity() {
         this.setVisible(true);
     }
 

@@ -13,18 +13,21 @@ public class NormalPellet extends Pellet {
                         final int col) {
         super(game);
         loadFrames("/resources/food.png");
-        this.setX(col * 8 + 3 - 32);
-        this.setY((row + 3) * 8 + 3);
-        this.setBoundingBox(new Rectangle(this.getX(), this.getY(), 2, 2));
+        setX(col * 8 + 3 - 32);
+        setY((row + 3) * 8 + 3);
+        setBoundingBox(new Rectangle(getX(), getY(), 2, 2));
     }
 
     @Override
     public void update() {
-        if (this.getGame().getState() == PacmanGame.State.PLAYING) {
-            if (this.getGame().consumePellet(this)) {
-                this.setVisible(false);
-                this.getGame().setCurrentFoodCount(this.getGame().getCurrentFoodCount() - 1);
-                this.getGame().addScore(10);
+        if (getGame().getState() == PacmanGame.State.READY) {
+            setVisible(true);
+        } else if (this.getGame().getState() == PacmanGame.State.PLAYING) {
+            if (getGame().pacmanEatsPellet(this)) {
+                this.eaten = true;
+                getGame().incrementFoodCount();
+                setVisible(false);
+                getGame().addScore(10);
             }
         }
     }
@@ -33,25 +36,18 @@ public class NormalPellet extends Pellet {
     public void draw(final Graphics2D g) {
         if (this.isVisible()) {
             g.setColor(Color.WHITE);
-            g.fillRect(this.getX(), this.getY(), 2, 2);
+            g.fillRect(getX(), getY(), 2, 2);
         }
     }
 
     @Override
-    public void stateChanged() {
-        if (this.getGame().getState() == PacmanGame.State.TITLE) {
-            this.setVisible(false);
-        } else if (this.getGame().getState() == PacmanGame.State.READY) {
-            this.setVisible(true);
-        }
+    public void hideEntity() {
+        setVisible(false);
     }
 
-    public void hideAll() {
-        this.setVisible(false);
-    }
-
-    public void showAll() {
-        this.setVisible(true);
+    @Override
+    public void showEntity() {
+        setVisible(true);
     }
 
 }
