@@ -9,7 +9,7 @@ public class Ready extends PacManEntity {
         super(game);
         setX(11 * 8);
         setY(20 * 8);
-        loadFrames("/resources/ready.png");
+        loadFrames("resources/ready.png");
     }
 
     @Override

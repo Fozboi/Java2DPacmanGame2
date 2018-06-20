@@ -37,13 +37,11 @@ class ShortestPathFinder {
     private final int[] neighbors = {1, 0, -1, 0, 0, 1, 0, -1};
 
     void find(final int srcX,
-              final int srcY,
-              final int destX,
-              final int destY) {
+              final int srcY) {
         this.path.clear();
         clearMap();
         int score = 1;
-        this.map[destY][destX] = score;
+        this.map[11][18] = score;
         found:
         while (true) {
             boolean foundAtLeastOne = false;

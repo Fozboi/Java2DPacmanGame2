@@ -2,17 +2,18 @@ package pacman.engine.entities;
 
 import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
+import pacman.engine.SoundUtils;
 
-import java.awt.Rectangle;
+import java.awt.*;
 
 public class PointMonitor extends PacManEntity {
 
     public PointMonitor(final PacmanGame game) {
         super(game);
-        loadFrames("/resources/point_0.png",
-                              "/resources/point_1.png",
-                              "/resources/point_2.png",
-                              "/resources/point_3.png");
+        loadFrames("resources/point_0.png",
+                              "resources/point_1.png",
+                              "resources/point_2.png",
+                              "resources/point_3.png");
         this.setBoundingBox(new Rectangle(0, 0, 4, 4));
     }
 
@@ -34,6 +35,7 @@ public class PointMonitor extends PacManEntity {
                     break;
                 case 1:
                     if (getElapsedTime() > 500) {
+                        SoundUtils.playSoundStream("resources/pacman_eatghost.wav");
                         setVisible(false);
                         getGame().getPacman().setVisible(true);
                         getGame().getPacman().updatePosition();

@@ -5,6 +5,7 @@ import pacman.engine.PacmanGame;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,7 +72,9 @@ public abstract class PacManEntity {
         try {
             this.setFrames(new BufferedImage[framesRes.length]);
             for (int i = 0; i < framesRes.length; i++) {
-                this.getFrames()[i] = ImageIO.read(getClass().getResourceAsStream(framesRes[i]));
+                FileInputStream in = new FileInputStream(framesRes[i]);
+                this.getFrames()[i] = ImageIO.read(in);
+                in.close();
             }
             this.setFrame(this.getFrames()[0]);
         } catch (final IOException ex) {
@@ -130,19 +133,11 @@ public abstract class PacManEntity {
         this.entityCounter++;
     }
 
-    long getStartTime() {
-        return this.startTime;
-    }
-
-    void setStartTime(final long startTime) {
-        this.startTime = startTime;
-    }
-
     void startTimer() {
         this.startTime = System.currentTimeMillis();
     }
 
     long getElapsedTime() {
-        return System.currentTimeMillis() - startTime;
+        return System.currentTimeMillis() - this.startTime;
     }
 }

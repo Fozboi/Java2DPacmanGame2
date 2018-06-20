@@ -3,8 +3,9 @@ package pacman.engine.entities;
 import pacman.engine.KeyBoard;
 import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
+import pacman.engine.SoundUtils;
 
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class Pacman extends PacManEntity {
@@ -20,11 +21,11 @@ public class Pacman extends PacManEntity {
         final String[] pacmanFrameNames = new String[30];
         for (int d = 0; d < 4; d++) {
             for (int i = 0; i < 4; i++) {
-                pacmanFrameNames[i + 4 * d] = "/resources/pacman_" + d + "_" + i + ".png";
+                pacmanFrameNames[i + 4 * d] = "resources/pacman_" + d + "_" + i + ".png";
             }
         }
         for (int i = 0; i < 14; i++) {
-            pacmanFrameNames[16 + i] = "/resources/pacman_died_" + i + ".png";
+            pacmanFrameNames[16 + i] = "resources/pacman_died_" + i + ".png";
         }
         loadFrames(pacmanFrameNames);
         placePacmanAtStartPosition();
@@ -46,7 +47,8 @@ public class Pacman extends PacManEntity {
                     break;
                 case 2:
                     setDirection(0);
-                    if (!moveToTargetPosition(250)) {
+                    final boolean tryToMoveToTargetPosition = moveToTargetPosition(250);
+                    if (!tryToMoveToTargetPosition) {
                         startTimer();
                         incrementEntityCounter();
                     }
@@ -96,7 +98,7 @@ public class Pacman extends PacManEntity {
                     }
                     setCol(getCol() + dx);
                     setRow(getRow() + dy);
-                    setEntityCounter(1);
+                    incrementEntityCounter();
                 case 1:
                     final int targetX = getCol() * 8 - 4 - 32;
                     final int targetY = (getRow() + 3) * 8 - 4;
@@ -130,6 +132,7 @@ public class Pacman extends PacManEntity {
                     if (getElapsedTime() > 2000) {
                         this.diedTime = System.currentTimeMillis();
                         incrementEntityCounter();
+                        SoundUtils.playSoundStream("pacman_death.wav");
                     }
                     break;
                 case 2:

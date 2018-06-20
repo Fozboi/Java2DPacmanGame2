@@ -3,6 +3,7 @@ package pacman.engine.entities;
 import pacman.engine.KeyBoard;
 import pacman.engine.PacmanGame;
 import pacman.engine.PacmanGame.State;
+import pacman.engine.SoundUtils;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -13,7 +14,7 @@ public class Title extends PacManEntity {
 
     public Title(final PacmanGame game) {
         super(game);
-        loadFrames("/resources/title.png");
+        loadFrames("resources/title.png");
         setX(21);
         setY(100);
     }
@@ -50,6 +51,7 @@ public class Title extends PacManEntity {
                     if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_SPACE]) {
                         getGame().setState(State.READY);
                         setVisible(false);
+                        SoundUtils.playSoundStream("pacman_beginning.wav");
                     }
             }
         }

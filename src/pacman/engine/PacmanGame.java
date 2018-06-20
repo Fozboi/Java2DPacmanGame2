@@ -13,7 +13,7 @@ public class PacmanGame {
     private final List<PacManEntity> allPacmanEntities = new ArrayList<>();
     private final List<Ghost> pacmanGhosts = new ArrayList<>();
     private final Pacman pacman;
-    private final BitmapFontRenderer bitmapFontRenderer = new BitmapFontRenderer("/resources/font8x8.png", 16, 16);
+    private final BitmapFontRenderer bitmapFontRenderer = new BitmapFontRenderer();
     private State state;
     private int lives;
     private int score;

@@ -1,6 +1,7 @@
 package pacman.engine.entities;
 
 import pacman.engine.PacmanGame;
+import pacman.engine.SoundUtils;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -12,7 +13,7 @@ public class NormalPellet extends Pellet {
                         final int row,
                         final int col) {
         super(game);
-        loadFrames("/resources/food.png");
+        loadFrames("resources/food.png");
         setX(col * 8 + 3 - 32);
         setY((row + 3) * 8 + 3);
         setBoundingBox(new Rectangle(getX(), getY(), 2, 2));
@@ -28,13 +29,14 @@ public class NormalPellet extends Pellet {
                 getGame().incrementFoodCount();
                 setVisible(false);
                 getGame().addScore(10);
+                SoundUtils.playSoundStream("pacman_chomp.wav");
             }
         }
     }
 
     @Override
     public void draw(final Graphics2D g) {
-        if (this.isVisible()) {
+        if (isVisible()) {
             g.setColor(Color.WHITE);
             g.fillRect(getX(), getY(), 2, 2);
         }
