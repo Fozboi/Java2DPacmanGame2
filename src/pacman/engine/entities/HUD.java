@@ -8,7 +8,7 @@ public class HUD extends PacManEntity {
 
     public HUD(final PacmanGame game) {
         super(game);
-        loadFrames("resources/pacman_life.png");
+        loadFrames("pacman_life.png");
     }
 
     @Override
@@ -28,11 +28,6 @@ public class HUD extends PacManEntity {
                 g.drawImage(getFrame(), 60 + 20 * lives, 272, null);
             }
         }
-    }
-
-    @Override
-    public void showEntity() {
-        setVisible(true);
     }
 
 }

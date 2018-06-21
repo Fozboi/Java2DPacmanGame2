@@ -40,9 +40,4 @@ public class IntroductionBanner extends PacManEntity {
         }
     }
 
-    @Override
-    public void showEntity() {
-        setVisible(true);
-    }
-
 }

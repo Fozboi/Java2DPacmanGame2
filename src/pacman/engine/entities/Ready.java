@@ -7,9 +7,9 @@ public class Ready extends PacManEntity {
 
     public Ready(final PacmanGame game) {
         super(game);
-        setX(11 * 8);
-        setY(20 * 8);
-        loadFrames("resources/ready.png");
+        setxPosition(11 * 8);
+        setyPosition(20 * 8);
+        loadFrames("ready.png");
     }
 
     @Override
@@ -27,7 +27,6 @@ public class Ready extends PacManEntity {
                     }
                     break;
                 case 2:
-                    getGame().showAll();
                     startTimer();
                     incrementEntityCounter();
                 case 3:
@@ -39,11 +38,6 @@ public class Ready extends PacManEntity {
                     break;
             }
         }
-    }
-
-    @Override
-    public void showEntity() {
-        setVisible(true);
     }
 
 }

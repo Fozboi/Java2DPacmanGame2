@@ -9,7 +9,7 @@ public class Background extends PacManEntity {
 
     public Background(final PacmanGame game) {
         super(game);
-        loadFrames("resources/background_0.png", "resources/background_1.png");
+        loadFrames("background_0.png", "background_1.png");
     }
 
     @Override
@@ -51,7 +51,6 @@ public class Background extends PacManEntity {
                                 return;
                             }
                         }
-                        getGame().hideAll();
                         startTimer();
                         incrementEntityCounter();
                         break;
@@ -63,16 +62,6 @@ public class Background extends PacManEntity {
                         break;
                 }
         }
-    }
-
-    @Override
-    public void hideEntity() {
-        this.setVisible(false);
-    }
-
-    @Override
-    public void showEntity() {
-        this.setVisible(true);
     }
 
 }

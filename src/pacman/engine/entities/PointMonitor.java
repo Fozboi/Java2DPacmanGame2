@@ -10,10 +10,10 @@ public class PointMonitor extends PacManEntity {
 
     public PointMonitor(final PacmanGame game) {
         super(game);
-        loadFrames("resources/point_0.png",
-                              "resources/point_1.png",
-                              "resources/point_2.png",
-                              "resources/point_3.png");
+        loadFrames("point_0.png",
+                              "point_1.png",
+                              "point_2.png",
+                              "point_3.png");
         this.setBoundingBox(new Rectangle(0, 0, 4, 4));
     }
 
@@ -23,7 +23,7 @@ public class PointMonitor extends PacManEntity {
             setVisible(true);
             switch (getEntityCounter()) {
                 case 0:
-                    updatePosition(getGame().getCaughtGhost().getColumn(), getGame().getCaughtGhost().getRow());
+                    updatePosition(getGame().getCaughtGhost().getRow(), getGame().getCaughtGhost().getColumn());
                     getGame().getPacman().setVisible(false);
                     getGame().getCaughtGhost().setVisible(false);
                     final int frameIndex = getGame().getCaughtGhostScoreTableIndex();
@@ -34,8 +34,8 @@ public class PointMonitor extends PacManEntity {
                     incrementEntityCounter();
                     break;
                 case 1:
-                    if (getElapsedTime() > 500) {
-                        SoundUtils.playSoundStream("resources/pacman_eatghost.wav");
+                    if (getElapsedTime() > 1000) {
+                        SoundUtils.playSoundStream("pacman_eatghost.wav");
                         setVisible(false);
                         getGame().getPacman().setVisible(true);
                         getGame().getPacman().updatePosition();
@@ -51,20 +51,10 @@ public class PointMonitor extends PacManEntity {
 
     }
 
-    @Override
-    public void hideEntity() {
-        this.setVisible(false);
-    }
-
-    @Override
-    public void showEntity() {
-        this.setVisible(true);
-    }
-
-    private void updatePosition(final int col,
-                                final int row) {
-        this.setX(col * 8 - 4 - 32);
-        this.setY((row + 3) * 8 + 1);
+    private void updatePosition(final int row,
+                                final int col) {
+        this.setxPosition(col * 8 - 4 - 32);
+        this.setyPosition((row + 3) * 8 + 1);
     }
 
 }

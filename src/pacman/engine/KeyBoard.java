@@ -24,6 +24,7 @@ public class KeyBoard extends KeyAdapter {
 
     @Override
     public void keyPressed(final KeyEvent e) {
+        System.out.println("key pressed " +e.getKeyCode());
         this.getKeyPressed()[e.getKeyCode()] = true;
     }
 

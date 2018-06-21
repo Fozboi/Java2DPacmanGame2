@@ -7,9 +7,9 @@ public class GameOverBanner extends PacManEntity {
 
     public GameOverBanner(final PacmanGame game) {
         super(game);
-        setX(77);
-        setY(160);
-        loadFrames("resources/gameover.png");
+        setxPosition(77);
+        setyPosition(160);
+        loadFrames("gameover.png");
     }
 
     @Override

@@ -10,26 +10,17 @@ import java.awt.event.KeyEvent;
 
 public class Pacman extends PacManEntity {
 
-    private int col;
     private int row;
+    private int column;
     private int desiredDirection;
-    private int direction;
-    private long diedTime;
+    private int currentDirection;
+    private long timeOfDeath;
 
     public Pacman(final PacmanGame game) {
         super(game);
-        final String[] pacmanFrameNames = new String[30];
-        for (int d = 0; d < 4; d++) {
-            for (int i = 0; i < 4; i++) {
-                pacmanFrameNames[i + 4 * d] = "resources/pacman_" + d + "_" + i + ".png";
-            }
-        }
-        for (int i = 0; i < 14; i++) {
-            pacmanFrameNames[16 + i] = "resources/pacman_died_" + i + ".png";
-        }
-        loadFrames(pacmanFrameNames);
+        loadFrames(initPacFrames());
         placePacmanAtStartPosition();
-        setBoundingBox(new Rectangle(getX(), getY(), 6, 6));
+        setBoundingBox(new Rectangle(getxPosition(), getyPosition(), 6, 6));
     }
 
     @Override
@@ -45,33 +36,15 @@ public class Pacman extends PacManEntity {
                         incrementEntityCounter();
                     }
                     break;
-                case 2:
-                    setDirection(0);
-                    final boolean tryToMoveToTargetPosition = moveToTargetPosition(250);
-                    if (!tryToMoveToTargetPosition) {
-                        startTimer();
-                        incrementEntityCounter();
-                    }
-                    break;
-                case 3:
-                    if (getElapsedTime() > 3000) {
-                        incrementEntityCounter();
-                    }
-                    break;
-                case 4:
-                    setDirection(2);
-                    if (!moveToTargetPosition(-100)) {
-                        resetEntityCounter();
-                    }
-                    break;
             }
-            updateAnimation();
         } else if (this.getGame().getState() == State.READY) {
             placePacmanAtStartPosition();
+            setVisible(true);
         } else if (this.getGame().getState() == State.PLAYING) {
             if (!isVisible()) {
                 return;
             }
+
             if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_LEFT]) {
                 this.desiredDirection = 2;
             } else if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_RIGHT]) {
@@ -82,38 +55,40 @@ public class Pacman extends PacManEntity {
                 this.desiredDirection = 1;
             }
 
+            System.out.println("desiredDirection = " +this.desiredDirection);
+
             switch (getEntityCounter()) {
                 case 0:
                     double angle = Math.toRadians(this.desiredDirection * 90);
                     int dx = (int) Math.cos(angle);
                     int dy = (int) Math.sin(angle);
-                    if (getGame().maze[getRow() + dy][getCol() + dx] == 0) {
-                        setDirection(this.desiredDirection);
+                    if (getGame().getGameMaze()[getRow() + dy][getColumn() + dx] == 0) {
+                        setCurrentDirection(this.desiredDirection);
                     }
-                    angle = Math.toRadians(getDirection() * 90);
+                    angle = Math.toRadians(getCurrentDirection() * 90);
                     dx = (int) Math.cos(angle);
                     dy = (int) Math.sin(angle);
-                    if (getGame().maze[getRow() + dy][getCol() + dx] == -1) {
+                    if (getGame().getGameMaze()[getRow() + dy][getColumn() + dx] == -1) {
                         break;
                     }
-                    setCol(getCol() + dx);
+                    setColumn(getColumn() + dx);
                     setRow(getRow() + dy);
                     incrementEntityCounter();
                 case 1:
-                    final int targetX = getCol() * 8 - 4 - 32;
+                    final int targetX = getColumn() * 8 - 4 - 32;
                     final int targetY = (getRow() + 3) * 8 - 4;
-                    final int difX = (targetX - getX());
-                    final int difY = (targetY - getY());
-                    setX(getX() + Integer.compare(difX, 0));
-                    setY(getY() + Integer.compare(difY, 0));
+                    final int difX = (targetX - getxPosition());
+                    final int difY = (targetY - getyPosition());
+                    setxPosition(getxPosition() + Integer.compare(difX, 0));
+                    setyPosition(getyPosition() + Integer.compare(difY, 0));
                     if (difX == 0 && difY == 0) {
                         resetEntityCounter();
-                        if (getCol() == 1) {
-                            setCol(34);
-                            setX(getCol() * 8 - 4 - 24);
-                        } else if (getCol() == 34) {
-                            setCol(1);
-                            setX(getCol() * 8 - 4 - 24);
+                        if (getColumn() == 1) {
+                            setColumn(34);
+                            setxPosition(getColumn() * 8 - 4 - 24);
+                        } else if (getColumn() == 34) {
+                            setColumn(1);
+                            setxPosition(getColumn() * 8 - 4 - 24);
                         }
                     }
                     break;
@@ -130,13 +105,13 @@ public class Pacman extends PacManEntity {
                     break;
                 case 1:
                     if (getElapsedTime() > 2000) {
-                        this.diedTime = System.currentTimeMillis();
+                        this.timeOfDeath = System.currentTimeMillis();
                         incrementEntityCounter();
                         SoundUtils.playSoundStream("pacman_death.wav");
                     }
                     break;
                 case 2:
-                    final int frameIndex = 16 + (int) ((System.currentTimeMillis() - this.diedTime) * 0.0075);
+                    final int frameIndex = 16 + (int) ((System.currentTimeMillis() - this.timeOfDeath) * 0.0075);
                     setFrame(getFrames()[frameIndex]);
                     if (frameIndex == 29) {
                         startTimer();
@@ -156,70 +131,62 @@ public class Pacman extends PacManEntity {
         } else if (this.getGame().getState() == State.LEVEL_CLEARED) {
             setFrame(getFrames()[0]);
         }
-        getBoundingBox().setLocation(getX() + 4, getY() + 4);
+        getBoundingBox().setLocation(getxPosition() + 4, getyPosition() + 4);
     }
 
-    @Override
-    public void showEntity() {
-        this.setVisible(true);
-    }
-
-    @Override
-    public void hideEntity() {
-        this.setVisible(false);
-    }
-
-    int getDirection() {
-        return this.direction;
+    int getCurrentDirection() {
+        return this.currentDirection;
     }
 
     int getRow() {
         return this.row;
     }
 
-    int getCol() {
-        return this.col;
+    int getColumn() {
+        return this.column;
     }
 
     void updatePosition() {
-        setX(getCol() * 8 - 4 - 32 - 4);
-        setY((getRow() + 3) * 8 - 4);
+        setxPosition(getColumn() * 8 - 4 - 32 - 4);
+        setyPosition((getRow() + 3) * 8 - 4);
     }
 
     private void placePacmanAtStartPosition() {
-        setCol(18);
         setRow(23);
+        setColumn(18);
         updatePosition();
         setFrame(getFrames()[0]);
-        setDirection(this.desiredDirection = 0);
-    }
-
-    private boolean moveToTargetPosition(final int targetX) {
-        final int sx = targetX - getX();
-        final int sy = 200 - getY();
-        final int vx = Math.abs(sx) < 1 ? Math.abs(sx) : 1;
-        final int vy = Math.abs(sy) < 1 ? Math.abs(sy) : 1;
-        final int idx = vx * (Integer.compare(sx, 0));
-        final int idy = vy * (Integer.compare(sy, 0));
-        setX(getX() + idx);
-        setY(getY() + idy);
-        return sx != 0 || sy != 0;
+        this.desiredDirection = 0;
+        this.currentDirection = 0;
     }
 
     private void updateAnimation() {
-        final int frameIndex = 4 * this.getDirection() + (int) (System.nanoTime() * 0.00000002) % 4;
-        this.setFrame(this.getFrames()[frameIndex]);
+        final int frameIndex = 4 * this.getCurrentDirection() + (int) (System.nanoTime() * 0.00000002) % 4;
+        setFrame(this.getFrames()[frameIndex]);
     }
 
-    private void setDirection(int direction) {
-        this.direction = direction;
+    private void setCurrentDirection(int currentDirection) {
+        this.currentDirection = currentDirection;
     }
 
     private void setRow(int row) {
         this.row = row;
     }
 
-    private void setCol(int col) {
-        this.col = col;
+    private void setColumn(int column) {
+        this.column = column;
+    }
+
+    private String[] initPacFrames() {
+        final String[] pacFrames = new String[30];
+        for (int d = 0; d < 4; d++) {
+            for (int i = 0; i < 4; i++) {
+                pacFrames[i + 4 * d] = "pacman_" + d + "_" + i + ".png";
+            }
+        }
+        for (int i = 0; i < 14; i++) {
+            pacFrames[16 + i] = "pacman_died_" + i + ".png";
+        }
+        return pacFrames;
     }
 }

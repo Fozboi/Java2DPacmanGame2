@@ -3,7 +3,7 @@ package pacman.engine;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
+import java.io.InputStream;
 
 class BitmapFontRenderer {
 
@@ -16,7 +16,7 @@ class BitmapFontRenderer {
     private static final int LETTER_HORIZONTAL_SPACING = 0;
 
     BitmapFontRenderer() {
-        loadFont("resources/font8x8.png");
+        loadFont();
     }
 
     void drawText(final Graphics2D g,
@@ -44,9 +44,9 @@ class BitmapFontRenderer {
         }
     }
 
-    private void loadFont(final String filename) {
+    private void loadFont() {
         try {
-            FileInputStream in = new FileInputStream(filename);
+            final InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("font8x8.png");
             this.bitmapFontImage = ImageIO.read(in);
             loadFont(this.bitmapFontImage);
             in.close();

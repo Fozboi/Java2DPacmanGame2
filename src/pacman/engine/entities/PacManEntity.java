@@ -5,17 +5,15 @@ import pacman.engine.PacmanGame;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.InputStream;
 
 
 public abstract class PacManEntity {
 
     private final PacmanGame game;
-    private int x;
-    private int y;
+    private int xPosition;
+    private int yPosition;
     private boolean visible;
     private BufferedImage frame;
     private BufferedImage[] frames;
@@ -27,15 +25,24 @@ public abstract class PacManEntity {
 
     PacManEntity(final PacmanGame game) {
         this.game = game;
+        this.xPosition = 0;
+        this.yPosition = 0;
+        this.visible = false;
         this.entityCounter = 0;
+        this.startTime = 0;
     }
 
     public abstract void update();
 
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName();
+    }
+
     public void draw(final Graphics2D g) {
         if (isVisible()) {
             if (getFrame() != null) {
-                g.drawImage(getFrame(), getX(), getY(), getFrame().getWidth(), getFrame().getHeight(), null);
+                g.drawImage(getFrame(), getxPosition(), getyPosition(), getFrame().getWidth(), getFrame().getHeight(), null);
             }
             if (DRAW_BOUNDING_BOX && this.getBoundingBox() != null) {
                 g.setColor(Color.RED);
@@ -48,12 +55,12 @@ public abstract class PacManEntity {
         return this.boundingBox;
     }
 
-    int getX() {
-        return this.x;
+    int getxPosition() {
+        return this.xPosition;
     }
 
-    int getY() {
-        return this.y;
+    int getyPosition() {
+        return this.yPosition;
     }
 
     BufferedImage getFrame() {
@@ -72,13 +79,13 @@ public abstract class PacManEntity {
         try {
             this.setFrames(new BufferedImage[framesRes.length]);
             for (int i = 0; i < framesRes.length; i++) {
-                FileInputStream in = new FileInputStream(framesRes[i]);
-                this.getFrames()[i] = ImageIO.read(in);
+                final InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(framesRes[i]);
+                getFrames()[i] = ImageIO.read(in);
                 in.close();
             }
-            this.setFrame(this.getFrames()[0]);
+            this.setFrame(getFrames()[0]);
         } catch (final IOException ex) {
-            Logger.getLogger(PacManEntity.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
             System.exit(-1);
         }
     }
@@ -95,18 +102,12 @@ public abstract class PacManEntity {
         this.visible = visible;
     }
 
-    public void showEntity() {
+    void setxPosition(final int xPosition) {
+        this.xPosition = xPosition;
     }
 
-    public void hideEntity() {
-    }
-
-    void setX(final int x) {
-        this.x = x;
-    }
-
-    void setY(final int y) {
-        this.y = y;
+    void setyPosition(final int yPosition) {
+        this.yPosition = yPosition;
     }
 
     void setFrame(final BufferedImage frame) {

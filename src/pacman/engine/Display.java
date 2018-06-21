@@ -29,13 +29,12 @@ class Display extends Canvas {
     }
 
     void start() {
-        if (!this.isRunning()) {
+        if (!isRunning()) {
             createBufferStrategy(3);
-            this.setDisplayBuffer(getBufferStrategy());
-            this.getGame().initializeGameObjects();
+            setDisplayBuffer(getBufferStrategy());
+            getGame().initializeGameObjects();
             this.running = true;
-            Thread thread = new Thread(new MainLoop(this));
-            thread.start();
+            new Thread(new MainLoop(this)).start();
         }
     }
 

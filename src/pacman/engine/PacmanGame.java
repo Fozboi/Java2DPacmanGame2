@@ -27,6 +27,10 @@ public class PacmanGame {
     private static final Dimension SCREEN_SIZE = new Dimension(224, 288);
     private static final Point2D SCREEN_SCALE = new Point2D.Double(2, 2);
 
+    public int[][] getGameMaze() {
+        return this.gameMaze;
+    }
+
     public enum State {
         INITIALIZING,
         TITLE,
@@ -38,7 +42,7 @@ public class PacmanGame {
         GAME_OVER
     }
 
-    public final int[][] maze = {
+    private final int[][] gameMaze = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
             {1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1},
             {1,1,1,1,1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1,1,1,1,1},
@@ -73,8 +77,8 @@ public class PacmanGame {
     };
 
     public PacmanGame() {
-        this.setState(State.INITIALIZING);
-        this.setLives(3);
+        setState(State.INITIALIZING);
+        this.lives = 3;
         this.pacman = new Pacman(this);
     }
 
@@ -145,12 +149,12 @@ public class PacmanGame {
     }
 
     public void ghostCaught(final Ghost ghost) {
-        this.setCaughtGhost(ghost);
+        this.caughtGhost = ghost;
         setState(State.GHOST_CAPTURED);
     }
 
     public void nextLife() {
-        this.setLives(this.getLives() - 1);
+        this.lives = this.lives--;
         if (this.getLives() == 0) {
             setState(State.GAME_OVER);
         }
@@ -164,12 +168,11 @@ public class PacmanGame {
     }
 
     public void nextLevel() {
-        showAll();
         setState(State.READY);
     }
 
     public void returnToTitle() {
-        this.setLives(3);
+        this.lives = 3;
         this.score = 0;
         this.currentFoodCount = 0;
         setState(State.TITLE);
@@ -177,18 +180,6 @@ public class PacmanGame {
 
     public boolean pacmanEatsPellet(final Pellet pellet) {
         return pellet.isVisible() && pellet.getBoundingBox().intersects(this.pacman.getBoundingBox());
-    }
-
-    public void showAll() {
-        for (final PacManEntity obj : this.getAllPacmanEntities()) {
-            obj.showEntity();
-        }
-    }
-
-    public void hideAll() {
-        for (final PacManEntity obj : this.getAllPacmanEntities()) {
-            obj.hideEntity();
-        }
     }
 
     public void drawText(final Graphics2D g,
@@ -213,16 +204,16 @@ public class PacmanGame {
         this.foodCount = 0;
         for (int row = 0; row < 31; row++) {
             for (int col = 0; col < 36; col++) {
-                if (this.maze[row][col] == 1) {
-                    this.maze[row][col] = -1;
+                if (this.getGameMaze()[row][col] == 1) {
+                    this.getGameMaze()[row][col] = -1;
                 }
-                else if (this.maze[row][col] == 2) {
-                    this.maze[row][col] = 0;
+                else if (this.getGameMaze()[row][col] == 2) {
+                    this.getGameMaze()[row][col] = 0;
                     this.allPacmanEntities.add(new NormalPellet(this, row, col));
                     this.foodCount++;
                 }
-                else if (this.maze[row][col] == 3) {
-                    this.maze[row][col] = 0;
+                else if (this.getGameMaze()[row][col] == 3) {
+                    this.getGameMaze()[row][col] = 0;
                     this.allPacmanEntities.add(new PowerPellet(this, col, row));
                     this.foodCount++;
                 }
@@ -245,6 +236,7 @@ public class PacmanGame {
     void update() {
         for (final PacManEntity actor : this.allPacmanEntities) {
             actor.update();
+            //System.out.println(actor + " isVisible = " +actor.isVisible());
         }
     }
 
@@ -252,18 +244,6 @@ public class PacmanGame {
         for (final PacManEntity actor : this.allPacmanEntities) {
             actor.draw(g);
         }
-    }
-
-    private List<PacManEntity> getAllPacmanEntities() {
-        return this.allPacmanEntities;
-    }
-
-    private void setCaughtGhost(final Ghost caughtGhost) {
-        this.caughtGhost = caughtGhost;
-    }
-
-    private void setLives(final int lives) {
-        this.lives = lives;
     }
 
 }

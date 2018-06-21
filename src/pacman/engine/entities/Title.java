@@ -14,9 +14,9 @@ public class Title extends PacManEntity {
 
     public Title(final PacmanGame game) {
         super(game);
-        loadFrames("resources/title.png");
-        setX(21);
-        setY(100);
+        loadFrames("title.png");
+        setxPosition(21);
+        setyPosition(100);
     }
 
     @Override
@@ -34,8 +34,8 @@ public class Title extends PacManEntity {
                     }
                     break;
                 case 2:
-                    final int dy = 100 - this.getY();
-                    setY(this.getY() + dy);
+                    final int dy = 100 - this.getyPosition();
+                    setyPosition(this.getyPosition() + dy);
                     if (Math.abs(dy) < 1) {
                         startTimer();
                         incrementEntityCounter();
@@ -49,6 +49,7 @@ public class Title extends PacManEntity {
                 case 4:
                     this.pushSpaceToStart = ((int) (System.nanoTime() * 0.0000000075) % 3) > 0;
                     if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_SPACE]) {
+                        resetEntityCounter();
                         getGame().setState(State.READY);
                         setVisible(false);
                         SoundUtils.playSoundStream("pacman_beginning.wav");
@@ -67,10 +68,6 @@ public class Title extends PacManEntity {
             getGame().drawText(g, "PROGRAMMED BY AMIR AFGHANI", 5, 240);
             getGame().drawText(g, "ORIGINAL GAME BY NAMCO 1980", 5, 255);
         }
-    }
-
-    public void showEntity() {
-        this.setVisible(true);
     }
 
 }

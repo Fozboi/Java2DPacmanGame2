@@ -10,10 +10,10 @@ public class PowerPellet extends Pellet {
                        final int col,
                        final int row) {
         super(game);
-        loadFrames("resources/powerBall.png");
-        setX(col * 8 + 1 - 32);
-        setY((row + 3) * 8 + 1);
-        setBoundingBox(new Rectangle(this.getX() + 2, this.getY() + 2, 4, 4));
+        loadFrames("powerBall.png");
+        setxPosition(col * 8 + 1 - 32);
+        setyPosition((row + 3) * 8 + 1);
+        setBoundingBox(new Rectangle(this.getxPosition() + 2, this.getyPosition() + 2, 4, 4));
         this.eaten = false;
     }
 
@@ -31,16 +31,6 @@ public class PowerPellet extends Pellet {
                 getGame().startGhostVulnerableMode();
             }
         }
-    }
-
-    @Override
-    public void hideEntity() {
-        setVisible(false);
-    }
-
-    @Override
-    public void showEntity() {
-        setVisible(true);
     }
 
 }
