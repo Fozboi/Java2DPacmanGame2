@@ -298,7 +298,7 @@ public class Ghost extends PacManEntity {
     }
 
     private void updateGhostNormal() {
-        if (checkVulnerableModeTime() && this.markAsVulnerable) {
+        if (elapsedVulnerableTime() <= 8000 && this.markAsVulnerable) {
             setMode(Mode.VULNERABLE);
             this.markAsVulnerable = false;
         }
@@ -321,17 +321,13 @@ public class Ghost extends PacManEntity {
 
         updateGhostMovement(true, this.pacman.getColumn(), this.pacman.getRow(), action, 2, 3, 0, 1);
         // return to normal mode after 8 seconds
-        if (!checkVulnerableModeTime()) {
+        if (elapsedVulnerableTime() > 8000) {
             setMode(Mode.NORMAL);
         }
     }
 
     private long elapsedVulnerableTime() {
         return System.currentTimeMillis() - this.vulnerableModeStartTime;
-    }
-
-    private boolean checkVulnerableModeTime() {
-        return System.currentTimeMillis() - this.vulnerableModeStartTime <= 8000;
     }
 
     private void updateGhostDied() {
