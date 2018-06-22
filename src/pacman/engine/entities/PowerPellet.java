@@ -10,10 +10,10 @@ public class PowerPellet extends Pellet {
                        final int col,
                        final int row) {
         super(game);
-        loadFrames("powerBall.png");
-        setxPosition(col * 8 + 1 - 32);
-        setyPosition((row + 3) * 8 + 1);
-        setBoundingBox(new Rectangle(this.getxPosition() + 2, this.getyPosition() + 2, 4, 4));
+        loadFrames(new String[]{"powerBall.png"});
+        setXPosition(col * 8 + 1 - 32);
+        setYPosition((row + 3) * 8 + 1);
+        setBoundingBox(new Rectangle(this.getXPosition() + 2, this.getYPosition() + 2, 4, 4));
         this.eaten = false;
     }
 

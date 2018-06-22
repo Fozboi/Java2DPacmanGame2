@@ -15,12 +15,14 @@ public class Pacman extends PacManEntity {
     private int desiredDirection;
     private int currentDirection;
     private long timeOfDeath;
+    private int pacFrameIndex;
 
     public Pacman(final PacmanGame game) {
         super(game);
         loadFrames(initPacFrames());
         placePacmanAtStartPosition();
-        setBoundingBox(new Rectangle(getxPosition(), getyPosition(), 6, 6));
+        setBoundingBox(new Rectangle(getXPosition(), getYPosition(), 6, 6));
+        this.pacFrameIndex = 0;
     }
 
     @Override
@@ -44,7 +46,6 @@ public class Pacman extends PacManEntity {
             if (!isVisible()) {
                 return;
             }
-
             if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_LEFT]) {
                 this.desiredDirection = 2;
             } else if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_RIGHT]) {
@@ -54,41 +55,38 @@ public class Pacman extends PacManEntity {
             } else if (KeyBoard.get().getKeyPressed()[KeyEvent.VK_DOWN]) {
                 this.desiredDirection = 1;
             }
-
-            System.out.println("desiredDirection = " +this.desiredDirection);
-
             switch (getEntityCounter()) {
                 case 0:
                     double angle = Math.toRadians(this.desiredDirection * 90);
                     int dx = (int) Math.cos(angle);
                     int dy = (int) Math.sin(angle);
-                    if (getGame().getGameMaze()[getRow() + dy][getColumn() + dx] == 0) {
-                        setCurrentDirection(this.desiredDirection);
+                    if (getGame().getGameMaze()[this.row + dy][this.column + dx] == 0) {
+                        this.currentDirection = this.desiredDirection;
                     }
                     angle = Math.toRadians(getCurrentDirection() * 90);
                     dx = (int) Math.cos(angle);
                     dy = (int) Math.sin(angle);
-                    if (getGame().getGameMaze()[getRow() + dy][getColumn() + dx] == -1) {
+                    if (getGame().getGameMaze()[this.row + dy][this.column + dx] == -1) {
                         break;
                     }
-                    setColumn(getColumn() + dx);
-                    setRow(getRow() + dy);
+                    this.row = this.row + dy;
+                    this.column = this.column + dx;
                     incrementEntityCounter();
                 case 1:
-                    final int targetX = getColumn() * 8 - 4 - 32;
-                    final int targetY = (getRow() + 3) * 8 - 4;
-                    final int difX = (targetX - getxPosition());
-                    final int difY = (targetY - getyPosition());
-                    setxPosition(getxPosition() + Integer.compare(difX, 0));
-                    setyPosition(getyPosition() + Integer.compare(difY, 0));
+                    final int targetX = this.column * 8 - 4 - 32;
+                    final int targetY = (this.row + 3) * 8 - 4;
+                    final int difX = (targetX - getXPosition());
+                    final int difY = (targetY - getYPosition());
+                    setXPosition(getXPosition() + Integer.compare(difX, 0));
+                    setYPosition(getYPosition() + Integer.compare(difY, 0));
                     if (difX == 0 && difY == 0) {
                         resetEntityCounter();
-                        if (getColumn() == 1) {
-                            setColumn(34);
-                            setxPosition(getColumn() * 8 - 4 - 24);
-                        } else if (getColumn() == 34) {
-                            setColumn(1);
-                            setxPosition(getColumn() * 8 - 4 - 24);
+                        if (this.column == 1) {
+                            this.column = 34;
+                            setXPosition(this.column * 8 - 4 - 24);
+                        } else if (this.column == 34) {
+                            this.column = 1;
+                            setXPosition(this.column * 8 - 4 - 24);
                         }
                     }
                     break;
@@ -131,10 +129,10 @@ public class Pacman extends PacManEntity {
         } else if (this.getGame().getState() == State.LEVEL_CLEARED) {
             setFrame(getFrames()[0]);
         }
-        getBoundingBox().setLocation(getxPosition() + 4, getyPosition() + 4);
+        getBoundingBox().setLocation(getXPosition() + 4, getYPosition() + 4);
     }
 
-    int getCurrentDirection() {
+    private int getCurrentDirection() {
         return this.currentDirection;
     }
 
@@ -147,13 +145,13 @@ public class Pacman extends PacManEntity {
     }
 
     void updatePosition() {
-        setxPosition(getColumn() * 8 - 4 - 32 - 4);
-        setyPosition((getRow() + 3) * 8 - 4);
+        setXPosition(this.column * 8 - 4 - 32 - 4);
+        setYPosition((this.row + 3) * 8 - 4);
     }
 
     private void placePacmanAtStartPosition() {
-        setRow(23);
-        setColumn(18);
+        this.row = 23;
+        this.column = 18;
         updatePosition();
         setFrame(getFrames()[0]);
         this.desiredDirection = 0;
@@ -162,19 +160,8 @@ public class Pacman extends PacManEntity {
 
     private void updateAnimation() {
         final int frameIndex = 4 * this.getCurrentDirection() + (int) (System.nanoTime() * 0.00000002) % 4;
+        System.out.println("pacman frameindex = " +frameIndex);
         setFrame(this.getFrames()[frameIndex]);
-    }
-
-    private void setCurrentDirection(int currentDirection) {
-        this.currentDirection = currentDirection;
-    }
-
-    private void setRow(int row) {
-        this.row = row;
-    }
-
-    private void setColumn(int column) {
-        this.column = column;
     }
 
     private String[] initPacFrames() {

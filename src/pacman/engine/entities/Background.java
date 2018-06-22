@@ -9,7 +9,7 @@ public class Background extends PacManEntity {
 
     public Background(final PacmanGame game) {
         super(game);
-        loadFrames("background_0.png", "background_1.png");
+        loadFrames(new String[]{"background_0.png", "background_1.png"});
     }
 
     @Override

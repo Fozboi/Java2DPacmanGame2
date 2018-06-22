@@ -8,7 +8,7 @@ public class HUD extends PacManEntity {
 
     public HUD(final PacmanGame game) {
         super(game);
-        loadFrames("pacman_life.png");
+        loadFrames(new String[]{"pacman_life.png"});
     }
 
     @Override

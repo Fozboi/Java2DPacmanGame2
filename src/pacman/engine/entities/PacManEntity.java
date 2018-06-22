@@ -21,8 +21,6 @@ public abstract class PacManEntity {
     private int entityCounter;
     private long startTime;
 
-    private static final boolean DRAW_BOUNDING_BOX = true;
-
     PacManEntity(final PacmanGame game) {
         this.game = game;
         this.xPosition = 0;
@@ -41,13 +39,7 @@ public abstract class PacManEntity {
 
     public void draw(final Graphics2D g) {
         if (isVisible()) {
-            if (getFrame() != null) {
-                g.drawImage(getFrame(), getxPosition(), getyPosition(), getFrame().getWidth(), getFrame().getHeight(), null);
-            }
-            if (DRAW_BOUNDING_BOX && this.getBoundingBox() != null) {
-                g.setColor(Color.RED);
-                g.draw(this.getBoundingBox());
-            }
+            g.drawImage(getFrame(), getXPosition(), getYPosition(), getFrame().getWidth(), getFrame().getHeight(), null);
         }
     }
 
@@ -55,11 +47,11 @@ public abstract class PacManEntity {
         return this.boundingBox;
     }
 
-    int getxPosition() {
+    int getXPosition() {
         return this.xPosition;
     }
 
-    int getyPosition() {
+    int getYPosition() {
         return this.yPosition;
     }
 
@@ -75,7 +67,7 @@ public abstract class PacManEntity {
         return this.entityCounter;
     }
 
-    void loadFrames(final String... framesRes) {
+    void loadFrames(final String[] framesRes) {
         try {
             this.setFrames(new BufferedImage[framesRes.length]);
             for (int i = 0; i < framesRes.length; i++) {
@@ -102,11 +94,11 @@ public abstract class PacManEntity {
         this.visible = visible;
     }
 
-    void setxPosition(final int xPosition) {
+    void setXPosition(final int xPosition) {
         this.xPosition = xPosition;
     }
 
-    void setyPosition(final int yPosition) {
+    void setYPosition(final int yPosition) {
         this.yPosition = yPosition;
     }
 

@@ -10,10 +10,7 @@ public class PointMonitor extends PacManEntity {
 
     public PointMonitor(final PacmanGame game) {
         super(game);
-        loadFrames("point_0.png",
-                              "point_1.png",
-                              "point_2.png",
-                              "point_3.png");
+        loadFrames(new String[]{"point_0.png", "point_1.png", "point_2.png", "point_3.png"});
         this.setBoundingBox(new Rectangle(0, 0, 4, 4));
     }
 
@@ -34,7 +31,7 @@ public class PointMonitor extends PacManEntity {
                     incrementEntityCounter();
                     break;
                 case 1:
-                    if (getElapsedTime() > 1000) {
+                    if (getElapsedTime() > 500) {
                         SoundUtils.playSoundStream("pacman_eatghost.wav");
                         setVisible(false);
                         getGame().getPacman().setVisible(true);
@@ -53,8 +50,8 @@ public class PointMonitor extends PacManEntity {
 
     private void updatePosition(final int row,
                                 final int col) {
-        this.setxPosition(col * 8 - 4 - 32);
-        this.setyPosition((row + 3) * 8 + 1);
+        this.setXPosition(col * 8 - 4 - 32);
+        this.setYPosition((row + 3) * 8 + 1);
     }
 
 }

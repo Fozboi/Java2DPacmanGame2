@@ -37,7 +37,7 @@ public class Ghost extends PacManEntity {
         this.type = type;
         this.pathFinder = new ShortestPathFinder(game.getGameMaze());
         loadFrames(initGhostFrames());
-        setBoundingBox(new Rectangle(this.getxPosition(), this.getyPosition(), 6, 6));
+        setBoundingBox(new Rectangle(this.getXPosition(), this.getYPosition(), 6, 6));
         setMode(Mode.CAGE);
         final Point initialPosition = INITIAL_POSITIONS[type];
         updatePosition(initialPosition.x, initialPosition.y);
@@ -50,6 +50,8 @@ public class Ghost extends PacManEntity {
         } else if (getGame().getState() == PacmanGame.State.READY) {
             setMode(Mode.CAGE);
             setVisible(true);
+            final Point initialPosition = INITIAL_POSITIONS[type];
+            updatePosition(initialPosition.x, initialPosition.y);
         } else if (getGame().getState() == State.PACMAN_DIED) {
             switch (getEntityCounter()) {
                 case 0:
@@ -106,7 +108,7 @@ public class Ghost extends PacManEntity {
         } else if (getGame().getState() == PacmanGame.State.LEVEL_CLEARED) {
             resetEntityCounter();
         }
-        getBoundingBox().setLocation(this.getxPosition() + 4, this.getyPosition() + 4);
+        getBoundingBox().setLocation(this.getXPosition() + 4, this.getYPosition() + 4);
     }
 
     public void startGhostVulnerableMode() {
@@ -123,8 +125,8 @@ public class Ghost extends PacManEntity {
     }
 
     void updatePosition() {
-        setxPosition(getTargetX(getColumn()));
-        setyPosition(getTargetY(getRow()));
+        setXPosition(getTargetX(getColumn()));
+        setYPosition(getTargetY(getRow()));
     }
 
     void died() {
@@ -169,14 +171,14 @@ public class Ghost extends PacManEntity {
     private boolean moveToTargetPosition(final int targetX,
                                          final int targetY,
                                          final int velocity) {
-        final int sx = targetX - getxPosition();
-        final int sy = targetY - getyPosition();
+        final int sx = targetX - getXPosition();
+        final int sy = targetY - getYPosition();
         final int vx = Math.abs(sx) < velocity ? Math.abs(sx) : velocity;
         final int vy = Math.abs(sy) < velocity ? Math.abs(sy) : velocity;
         final int idx = vx * (Integer.compare(sx, 0));
         final int idy = vy * (Integer.compare(sy, 0));
-        setxPosition(getxPosition() + idx);
-        setyPosition(getyPosition() + idy);
+        setXPosition(getXPosition() + idx);
+        setYPosition(getYPosition() + idy);
         return sx != 0 || sy != 0;
     }
 
@@ -191,10 +193,10 @@ public class Ghost extends PacManEntity {
     private void adjustHorizontalOutsideMovement() {
         if (getColumn() == 1) {
             setColumn(34);
-            setxPosition(getTargetX(this.getColumn()));
+            setXPosition(getTargetX(this.getColumn()));
         } else if (this.getColumn() == 34) {
             setColumn(1);
-            setxPosition(getTargetX(this.getColumn()));
+            setXPosition(getTargetX(this.getColumn()));
         }
     }
 
@@ -203,14 +205,10 @@ public class Ghost extends PacManEntity {
         switch (this.mode) {
             case CAGE:
             case NORMAL:
-                frameIndex = 2 * this.direction + (int) (System.nanoTime() * 0.00000001) % 2;
+                frameIndex = 2 * this.direction;
                 break;
             case VULNERABLE:
-                if (elapsedVulnerableTime() > 5000) {
-                    frameIndex = 8 + (int) (System.nanoTime() * 0.00000002) % 4;
-                } else {
-                    frameIndex = 8 + (int) (System.nanoTime() * 0.00000001) % 2;
-                }
+                frameIndex = 8;
                 break;
             case DIED:
                 frameIndex = 12 + this.direction;
@@ -224,7 +222,7 @@ public class Ghost extends PacManEntity {
             case 0:
                 final Point initialPosition = INITIAL_POSITIONS[this.type];
                 updatePosition(initialPosition.x, initialPosition.y);
-                setxPosition(getxPosition() - 4);
+                setXPosition(getXPosition() - 4);
                 this.cageUpDownCount = 0;
                 if (this.type == 0) {
                     setEntityCounter(6);
@@ -236,12 +234,12 @@ public class Ghost extends PacManEntity {
                 incrementEntityCounter();
                 break;
             case 1:
-                if (moveToTargetPosition(getxPosition(), 134 + 4, 1)) {
+                if (moveToTargetPosition(getXPosition(), 134 + 4, 1)) {
                     break;
                 }
                 incrementEntityCounter();
             case 2:
-                if (moveToTargetPosition(getxPosition(), 134 - 4, 1)) {
+                if (moveToTargetPosition(getXPosition(), 134 - 4, 1)) {
                     break;
                 }
                 this.cageUpDownCount++;
@@ -252,7 +250,7 @@ public class Ghost extends PacManEntity {
                 incrementEntityCounter();
                 break;
             case 3:
-                if (moveToTargetPosition(this.getxPosition(), 134, 1)) {
+                if (moveToTargetPosition(this.getXPosition(), 134, 1)) {
                     break;
                 }
                 incrementEntityCounter();
@@ -303,7 +301,10 @@ public class Ghost extends PacManEntity {
             this.markAsVulnerable = false;
         }
 
-        final EntityCapturedAction action = pacmanGame -> pacmanGame.setState(State.PACMAN_DIED);
+        final EntityCapturedAction action = pacmanGame -> {
+            pacmanGame.setState(State.PACMAN_DIED);
+            pacmanGame.getPacman().resetEntityCounter();
+        };
 
         if (this.type == 0 || this.type == 1) {
             updateGhostMovement(true, this.pacman.getColumn(), this.pacman.getRow(), action, 0, 1, 2, 3);
@@ -337,14 +338,13 @@ public class Ghost extends PacManEntity {
                 incrementEntityCounter();
                 break;
             case 1:
-                final boolean hasNext = this.pathFinder.hasNext();
-                if (!hasNext) {
-                    setEntityCounter(3);
-                } else {
+                if (this.pathFinder.hasNext()) {
                     final Point nextPosition = this.pathFinder.getNext();
                     setColumn(nextPosition.x);
                     setRow(nextPosition.y);
                     incrementEntityCounter();
+                } else {
+                    setEntityCounter(3);
                 }
                 break;
             case 2:
@@ -444,7 +444,7 @@ public class Ghost extends PacManEntity {
     }
 
     private String[] initGhostFrames() {
-        final String[] ghostFrameNames = new String[8 + 4 + 4];
+        final String[] ghostFrameNames = new String[16];
         for (int i = 0; i < 8; i++) {
             ghostFrameNames[i] = "ghost_" + this.type + "_" + i + ".png";
         }

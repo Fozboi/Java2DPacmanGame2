@@ -7,9 +7,9 @@ public class Ready extends PacManEntity {
 
     public Ready(final PacmanGame game) {
         super(game);
-        setxPosition(11 * 8);
-        setyPosition(20 * 8);
-        loadFrames("ready.png");
+        setXPosition(11 * 8);
+        setYPosition(20 * 8);
+        loadFrames(new String[]{"ready.png"});
     }
 
     @Override
