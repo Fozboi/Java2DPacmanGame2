@@ -47,6 +47,7 @@ class BitmapFontRenderer {
     private void loadFont() {
         try {
             final InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("font8x8.png");
+            System.out.println(in == null);
             this.bitmapFontImage = ImageIO.read(in);
             loadFont(this.bitmapFontImage);
             in.close();
